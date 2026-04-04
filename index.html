@@ -216,25 +216,24 @@
       margin-bottom: 28px;
     }
 
-    /* CSS columns: true masonry flow */
+    /* CSS grid collage */
     .collage-grid {
-      columns: 4;
-      column-gap: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
     }
 
     .collage-item {
-      break-inside: avoid;
-      margin-bottom: 10px;
       overflow: hidden;
       background: rgba(11, 90, 255, 0.06);
       position: relative;
       cursor: none;
     }
 
-    /* Drop images straight into .collage-item — they fill naturally */
     .collage-item img {
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
       display: block;
       transition: opacity 0.2s ease;
     }
@@ -243,25 +242,18 @@
       opacity: 0.88;
     }
 
-    /* Empty placeholder shown when no <img> is inside */
-    .collage-item:not(:has(img)) {
-      aspect-ratio: var(--ratio, 1 / 1.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* Wide item spans 2 columns */
+    .collage-item--wide {
+      grid-column: span 2;
     }
 
-    .collage-item:not(:has(img))::after {
-      content: '+';
-      font-size: 22px;
-      opacity: 0.2;
-      color: var(--blue-full);
+    /* Small item constrained within its cell */
+    .collage-item--small img {
+      width: 70%;
+      height: auto;
+      margin: 0 auto;
+      object-fit: unset;
     }
-
-    /* Vary aspect ratios of empty placeholders for visual interest */
-    .collage-item:nth-child(3n)   { --ratio: 1 / 0.75; }
-    .collage-item:nth-child(3n+1) { --ratio: 1 / 1.4;  }
-    .collage-item:nth-child(3n+2) { --ratio: 1 / 1;    }
 
     /* ── RESPONSIVE ────────────────────────────────────────── */
     @media (max-width: 860px) {
@@ -306,8 +298,8 @@
       }
 
       .collage-section { padding: 48px 28px 60px; }
-      .collage-grid { columns: 2; column-gap: 6px; }
-      .collage-item { margin-bottom: 6px; }
+      .collage-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .collage-item--wide { grid-column: span 2; }
     }
   </style>
 </head>
@@ -439,7 +431,7 @@
         <img src="images/collage-img_4927.jpg" alt="" />
       </div>
 
-      <div class="collage-item">
+      <div class="collage-item collage-item--small">
         <img src="images/collage-img_6043.jpg" alt="" />
       </div>
 
@@ -447,7 +439,7 @@
         <img src="images/collage-img_6504.jpg" alt="" />
       </div>
 
-      <div class="collage-item">
+      <div class="collage-item collage-item--wide">
         <img src="images/collage-img_6808.jpg" alt="" />
       </div>
 
