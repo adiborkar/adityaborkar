@@ -182,7 +182,7 @@
     .progress-bar:hover .progress-fill::after { opacity: 1; }
 
     /* main controls row */
-    .controls { display: flex; align-items: center; gap: 24px; }
+    .controls { display: flex; align-items: center; gap: 24px; flex-wrap: nowrap; }
 
     .ctrl-btn {
       background: none;
@@ -199,13 +199,6 @@
     .ctrl-btn:hover { opacity: 0.4; }
     .ctrl-btn svg { width: 22px; height: 22px; fill: currentColor; }
     .btn-play svg { width: 38px; height: 38px; }
-
-    /* second row: volume + speed */
-    .controls-row2 {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-    }
 
     /* volume */
     .volume-wrap {
@@ -252,6 +245,7 @@
       font-size: 14px;
       opacity: 0.75;
       margin-left: auto;
+      flex-shrink: 0;
     }
     .speed-label { font-size: 13px; }
 
@@ -401,9 +395,7 @@
               <button class="ctrl-btn btn-fwd" title="+10 seconds">
                 ${svg('M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z')}
               </button>
-            </div>
 
-            <div class="controls-row2">
               <div class="volume-wrap">
                 <span class="volume-icon">
                   ${svg('M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z')}
@@ -453,7 +445,7 @@
       const speedSel  = panel.querySelector('.speed-select');
 
       // add cursor hover to controls
-      [playBtn, backBtn, fwdBtn, bar, volSlider, speedSel].forEach(addHover);
+      [playBtn, backBtn, fwdBtn, bar, volSlider, speedSel, panel.querySelector('.volume-wrap')].filter(Boolean).forEach(addHover);
 
       playBtn.addEventListener('click', () => audio.paused ? audio.play() : audio.pause());
       backBtn.addEventListener('click', () => { audio.currentTime = Math.max(0, audio.currentTime - 10); });
