@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Written Works — Aditya Borkar</title>
+  <style>
+    @font-face {
+      font-family: 'Zodiak';
+      src: url('fonts/Zodiak-Variable.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Zodiak';
+      src: url('fonts/Zodiak-VariableItalic.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: italic;
+      font-display: swap;
+    }
+  </style>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --blue: #0b5aff;
+      --bg: #fffff2;
+      --rule: rgba(11, 90, 255, 0.22);
+    }
+
+    ::selection { background: rgba(11, 90, 255, 0.15); }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--blue);
+      font-family: 'Zodiak', Georgia, serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      -webkit-font-smoothing: antialiased;
+      cursor: none;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── CUSTOM CURSOR ─────────────────────────────────────── */
+    #cursor {
+      position: fixed;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--blue);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s ease, opacity 0.15s ease;
+      will-change: transform;
+    }
+    #cursor.hovering {
+      transform: translate(-50%, -50%) scale(2.2);
+      opacity: 0.4;
+    }
+
+    /* ── NAV ───────────────────────────────────────────────── */
+    .nav {
+      padding: 44px 52px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .nav a {
+      font-size: 22px;
+      letter-spacing: -0.3px;
+      transition: opacity 0.15s;
+    }
+    .nav a:last-child { font-size: 18px; }
+    .nav a:hover { opacity: 0.5; }
+
+    /* ── LAYOUT ────────────────────────────────────────────── */
+    .page {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 60px 52px 100px;
+      gap: 0;
+    }
+
+    /* ── LEFT: index ───────────────────────────────────────── */
+    .index-col {
+      padding-right: 56px;
+      position: sticky;
+      top: 60px;
+      align-self: start;
+      height: fit-content;
+    }
+
+    .index-label {
+      font-size: 14px;
+      letter-spacing: -0.3px;
+      opacity: 0.5;
+      margin-bottom: 16px;
+    }
+
+    .index-list {
+      list-style: none;
+    }
+
+    .index-item {
+      border-top: 1px solid var(--rule);
+      padding: 10px 0;
+      cursor: none;
+      transition: opacity 0.15s;
+    }
+
+    .index-item:last-child {
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .index-item:hover {
+      opacity: 0.55;
+    }
+
+    .index-item.active {
+      opacity: 1;
+    }
+
+    .index-item.active .index-title {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .index-title {
+      font-size: 18px;
+      letter-spacing: -0.4px;
+      line-height: 1.3;
+      display: block;
+    }
+
+    .index-meta {
+      font-size: 13px;
+      opacity: 0.55;
+      margin-top: 2px;
+    }
+
+    /* ── RIGHT: content ────────────────────────────────────── */
+    .content-col {
+      padding-left: 56px;
+      border-left: 1px solid var(--rule);
+      min-height: 60vh;
+    }
+
+    .work {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .work.visible {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0);   }
+    }
+
+    .work-title {
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .work-meta {
+      font-size: 14px;
+      opacity: 0.55;
+      margin-bottom: 36px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .work-body {
+      font-size: 18px;
+      line-height: 1.65;
+      letter-spacing: -0.02em;
+    }
+
+    .work-body p + p {
+      margin-top: 1.4em;
+    }
+
+    /* Empty state */
+    .empty-state {
+      opacity: 0.3;
+      font-size: 18px;
+      padding-top: 4px;
+    }
+
+    /* ── RESPONSIVE ────────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .nav { padding: 32px 28px 0; }
+      .page {
+        grid-template-columns: 1fr;
+        padding: 40px 28px 80px;
+      }
+      .index-col {
+        padding-right: 0;
+        position: static;
+        margin-bottom: 48px;
+      }
+      .content-col {
+        padding-left: 0;
+        border-left: none;
+        border-top: 1px solid var(--rule);
+        padding-top: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html" data-hover>Aditya Borkar</a>
+    <a href="index.html" data-hover>← Back</a>
+  </nav>
+
+  <div class="page">
+
+    <!-- LEFT: index of works -->
+    <aside class="index-col">
+      <p class="index-label">Written Works</p>
+      <ul class="index-list" id="index-list">
+
+        <!-- ── ADD YOUR WORKS HERE ──────────────────────────────
+             Copy and paste a new <li> for each piece.
+             - data-work must match the id of its <article> below
+             - Change the title and date as needed
+        ──────────────────────────────────────────────────────── -->
+
+        <li class="index-item" data-work="work-1" data-hover>
+          <span class="index-title">Work Title One</span>
+          <span class="index-meta">Essay · 2025</span>
+        </li>
+
+        <li class="index-item" data-work="work-2" data-hover>
+          <span class="index-title">Work Title Two</span>
+          <span class="index-meta">Essay · 2024</span>
+        </li>
+
+        <li class="index-item" data-work="work-3" data-hover>
+          <span class="index-title">Work Title Three</span>
+          <span class="index-meta">Short Story · 2024</span>
+        </li>
+
+        <li class="index-item" data-work="work-4" data-hover>
+          <span class="index-title">Work Title Four</span>
+          <span class="index-meta">Essay · 2023</span>
+        </li>
+
+        <li class="index-item" data-work="work-5" data-hover>
+          <span class="index-title">Work Title Five</span>
+          <span class="index-meta">Essay · 2023</span>
+        </li>
+
+      </ul>
+    </aside>
+
+    <!-- RIGHT: work content -->
+    <main class="content-col" id="content-col">
+
+      <!-- Shown before any work is selected -->
+      <p class="empty-state" id="empty-state">Select a work to read it.</p>
+
+      <!-- ── ADD YOUR WORK CONTENT HERE ───────────────────────
+           Each <article> id must match the data-work on its <li>.
+           Put the full text inside .work-body as <p> tags.
+      ──────────────────────────────────────────────────────── -->
+
+      <article class="work" id="work-1">
+        <h1 class="work-title">Work Title One</h1>
+        <p class="work-meta">Essay · 2025</p>
+        <div class="work-body">
+          <p>Paste the full text of this piece here. You can use as many &lt;p&gt; tags as you need — one per paragraph.</p>
+          <p>Second paragraph goes here.</p>
+        </div>
+      </article>
+
+      <article class="work" id="work-2">
+        <h1 class="work-title">Work Title Two</h1>
+        <p class="work-meta">Essay · 2024</p>
+        <div class="work-body">
+          <p>Paste the full text of this piece here.</p>
+          <p>Second paragraph goes here.</p>
+        </div>
+      </article>
+
+      <article class="work" id="work-3">
+        <h1 class="work-title">Work Title Three</h1>
+        <p class="work-meta">Short Story · 2024</p>
+        <div class="work-body">
+          <p>Paste the full text of this piece here.</p>
+          <p>Second paragraph goes here.</p>
+        </div>
+      </article>
+
+      <article class="work" id="work-4">
+        <h1 class="work-title">Work Title Four</h1>
+        <p class="work-meta">Essay · 2023</p>
+        <div class="work-body">
+          <p>Paste the full text of this piece here.</p>
+          <p>Second paragraph goes here.</p>
+        </div>
+      </article>
+
+      <article class="work" id="work-5">
+        <h1 class="work-title">Work Title Five</h1>
+        <p class="work-meta">Essay · 2023</p>
+        <div class="work-body">
+          <p>Paste the full text of this piece here.</p>
+          <p>Second paragraph goes here.</p>
+        </div>
+      </article>
+
+    </main>
+  </div>
+
+  <script>
+    // ── Custom cursor ──────────────────────────────────────────
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+    });
+    document.addEventListener('mouseleave', () => cursor.style.opacity = '0');
+    document.addEventListener('mouseenter', () => cursor.style.opacity = '0.7');
+    document.querySelectorAll('[data-hover], a, button, li').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+    });
+
+    // ── Index click logic ──────────────────────────────────────
+    const items    = document.querySelectorAll('.index-item');
+    const works    = document.querySelectorAll('.work');
+    const empty    = document.getElementById('empty-state');
+
+    items.forEach(item => {
+      item.addEventListener('click', () => {
+        const target = item.dataset.work;
+
+        // Update index active state
+        items.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+
+        // Hide all works, show selected
+        works.forEach(w => w.classList.remove('visible'));
+        empty.style.display = 'none';
+        const el = document.getElementById(target);
+        if (el) {
+          el.classList.add('visible');
+          // On mobile, scroll content into view
+          if (window.innerWidth <= 860) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
