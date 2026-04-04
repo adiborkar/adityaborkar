@@ -27,11 +27,10 @@
       --blue: #0b5aff;
       --bg: #fffff2;
       --rule: rgba(11, 90, 255, 0.22);
-      --blue-dim: rgba(11, 90, 255, 0.12);
+      --dim: rgba(11, 90, 255, 0.10);
     }
 
     ::selection { background: rgba(11, 90, 255, 0.15); }
-
     html, body { width: 100%; min-height: 100%; }
 
     body {
@@ -60,10 +59,7 @@
       transform: translate(-50%, -50%);
       transition: transform 0.08s ease, opacity 0.15s ease;
     }
-    #cursor.hovering {
-      transform: translate(-50%, -50%) scale(2.2);
-      opacity: 0.4;
-    }
+    #cursor.hovering { transform: translate(-50%, -50%) scale(2.2); opacity: 0.4; }
 
     /* ── NAV ───────────────────────────────────────────────── */
     .nav {
@@ -81,7 +77,6 @@
       display: grid;
       grid-template-columns: 1fr 2.5fr;
       padding: 60px 52px 100px;
-      gap: 0;
     }
 
     /* ── LEFT: index ───────────────────────────────────────── */
@@ -92,11 +87,7 @@
       align-self: start;
     }
 
-    .index-label {
-      font-size: 14px;
-      opacity: 0.5;
-      margin-bottom: 16px;
-    }
+    .index-label { font-size: 14px; opacity: 0.5; margin-bottom: 16px; }
 
     .index-list { list-style: none; }
 
@@ -112,14 +103,8 @@
       text-decoration: underline;
       text-underline-offset: 4px;
     }
-
-    .index-title {
-      font-size: 18px;
-      letter-spacing: -0.4px;
-      line-height: 1.3;
-      display: block;
-    }
-    .index-meta { font-size: 13px; opacity: 0.55; margin-top: 2px; }
+    .index-title { font-size: 18px; letter-spacing: -0.4px; line-height: 1.3; display: block; }
+    .index-meta  { font-size: 13px; opacity: 0.55; margin-top: 2px; }
 
     /* ── RIGHT: player ─────────────────────────────────────── */
     .player-col {
@@ -128,12 +113,8 @@
       min-height: 60vh;
     }
 
-    .empty-state {
-      opacity: 0.3;
-      font-size: 18px;
-    }
+    .empty-state { opacity: 0.3; font-size: 18px; }
 
-    /* individual track player */
     .track { display: none; }
     .track.visible { display: block; animation: fadeIn 0.25s ease; }
 
@@ -157,22 +138,14 @@
       border-bottom: 1px solid var(--rule);
     }
 
-    /* ── AUDIO PLAYER UI ───────────────────────────────────── */
-    .player {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
+    /* ── PLAYER CONTROLS ───────────────────────────────────── */
+    .player { display: flex; flex-direction: column; gap: 20px; }
 
     /* progress bar */
-    .progress-wrap {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+    .progress-wrap { display: flex; align-items: center; gap: 14px; }
 
     .time {
-      font-size: 14px;
+      font-size: 13px;
       opacity: 0.6;
       letter-spacing: 0;
       flex-shrink: 0;
@@ -182,43 +155,34 @@
     .progress-bar {
       flex: 1;
       height: 2px;
-      background: var(--blue-dim);
+      background: var(--dim);
       border-radius: 2px;
       position: relative;
       cursor: none;
     }
-
     .progress-fill {
       height: 100%;
       background: var(--blue);
       border-radius: 2px;
       width: 0%;
-      transition: width 0.1s linear;
       position: relative;
+      pointer-events: none;
     }
-
     .progress-fill::after {
       content: '';
       position: absolute;
-      right: -5px;
-      top: 50%;
+      right: -5px; top: 50%;
       transform: translateY(-50%);
-      width: 10px;
-      height: 10px;
+      width: 10px; height: 10px;
       border-radius: 50%;
       background: var(--blue);
       opacity: 0;
       transition: opacity 0.15s;
     }
-
     .progress-bar:hover .progress-fill::after { opacity: 1; }
 
-    /* controls row */
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-    }
+    /* main controls row */
+    .controls { display: flex; align-items: center; gap: 24px; }
 
     .ctrl-btn {
       background: none;
@@ -228,50 +192,88 @@
       padding: 0;
       display: flex;
       align-items: center;
-      gap: 5px;
-      font-family: 'Zodiak', Georgia, serif;
-      font-size: 14px;
-      letter-spacing: -0.3px;
       opacity: 0.85;
       transition: opacity 0.15s;
+      flex-shrink: 0;
     }
-    .ctrl-btn:hover { opacity: 0.45; }
+    .ctrl-btn:hover { opacity: 0.4; }
+    .ctrl-btn svg { width: 22px; height: 22px; fill: currentColor; }
+    .btn-play svg { width: 38px; height: 38px; }
 
-    .ctrl-btn svg {
-      width: 20px;
-      height: 20px;
-      fill: currentColor;
+    /* second row: volume + speed */
+    .controls-row2 {
+      display: flex;
+      align-items: center;
+      gap: 28px;
     }
 
-    /* play/pause is bigger */
-    .btn-play svg { width: 36px; height: 36px; }
+    /* volume */
+    .volume-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .volume-icon { opacity: 0.6; flex-shrink: 0; }
+    .volume-icon svg { width: 18px; height: 18px; fill: var(--blue); display: block; }
 
-    /* speed selector */
+    .volume-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100px;
+      height: 2px;
+      background: var(--dim);
+      border-radius: 2px;
+      cursor: none;
+      outline: none;
+    }
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--blue);
+      cursor: none;
+      transition: transform 0.1s;
+    }
+    .volume-slider:hover::-webkit-slider-thumb { transform: scale(1.3); }
+    .volume-slider::-moz-range-thumb {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--blue);
+      border: none;
+      cursor: none;
+    }
+
+    /* speed dropdown */
     .speed-wrap {
-      margin-left: auto;
       display: flex;
       align-items: center;
       gap: 8px;
       font-size: 14px;
-      opacity: 0.7;
+      opacity: 0.75;
+      margin-left: auto;
     }
+    .speed-label { font-size: 13px; }
 
-    .speed-btn {
+    .speed-select {
+      -webkit-appearance: none;
+      appearance: none;
       background: none;
       border: 1px solid var(--rule);
       color: var(--blue);
-      cursor: none;
       font-family: 'Zodiak', Georgia, serif;
       font-size: 13px;
-      padding: 3px 9px;
       letter-spacing: -0.2px;
-      transition: background 0.15s, opacity 0.15s;
+      padding: 4px 28px 4px 10px;
+      cursor: none;
+      outline: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%230b5aff' opacity='0.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      transition: opacity 0.15s;
     }
-    .speed-btn:hover { opacity: 0.6; }
-    .speed-btn.active {
-      background: var(--blue);
-      color: var(--bg);
-    }
+    .speed-select:hover { opacity: 0.6; }
+    .speed-select option { background: var(--bg); color: var(--blue); }
 
     /* ── RESPONSIVE ────────────────────────────────────────── */
     @media (max-width: 860px) {
@@ -279,6 +281,7 @@
       .page { grid-template-columns: 1fr; padding: 40px 28px 80px; }
       .index-col { padding-right: 0; position: static; margin-bottom: 48px; }
       .player-col { padding-left: 0; border-left: none; border-top: 1px solid var(--rule); padding-top: 40px; }
+      .volume-slider { width: 70px; }
     }
   </style>
 </head>
@@ -293,15 +296,16 @@
 
   <div class="page">
 
-    <!-- LEFT: song index -->
+    <!-- LEFT: song index
+         ─────────────────────────────────────────────────────
+         To add a song: copy one <li> and update:
+           · data-track — must match the id in TRACKS below
+           · data-src   — path to your audio file
+           · the title and year text
+    ─────────────────────────────────────────────────────── -->
     <aside class="index-col">
       <p class="index-label">Music</p>
       <ul class="index-list" id="index-list">
-
-        <!-- ── ADD SONGS HERE ────────────────────────────────────
-             data-track must match the id of the <div class="track"> below
-             data-src is the path to your audio file
-        ──────────────────────────────────────────────────────── -->
 
         <li class="index-item" data-track="track-1" data-src="audio/track-1.mp3" data-hover>
           <span class="index-title">Song Title One</span>
@@ -331,148 +335,10 @@
       </ul>
     </aside>
 
-    <!-- RIGHT: player -->
+    <!-- RIGHT: player (panels injected by JS) -->
     <main class="player-col" id="player-col">
-
       <p class="empty-state" id="empty-state">Select a track to listen.</p>
-
-      <!-- Hidden audio element — shared across all tracks -->
       <audio id="audio"></audio>
-
-      <!-- ── ADD TRACK PANELS HERE ──────────────────────────────
-           Each id must match the data-track on its <li>
-      ──────────────────────────────────────────────────────── -->
-
-      <div class="track" id="track-1">
-        <h1 class="track-title">Song Title One</h1>
-        <p class="track-meta">2025</p>
-        <div class="player" data-player>
-          <!-- progress -->
-          <div class="progress-wrap">
-            <span class="time current">0:00</span>
-            <div class="progress-bar">
-              <div class="progress-fill"></div>
-            </div>
-            <span class="time duration">0:00</span>
-          </div>
-          <!-- controls -->
-          <div class="controls">
-            <!-- skip back 10s -->
-            <button class="ctrl-btn btn-back" title="−10s">
-              <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/><text x="7.5" y="15.5" font-size="5" fill="currentColor" font-family="sans-serif">10</text></svg>
-            </button>
-            <!-- play/pause -->
-            <button class="ctrl-btn btn-play" title="Play/Pause">
-              <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-              <svg class="icon-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-            <!-- skip forward 10s -->
-            <button class="ctrl-btn btn-fwd" title="+10s">
-              <svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/><text x="7.5" y="15.5" font-size="5" fill="currentColor" font-family="sans-serif">10</text></svg>
-            </button>
-            <!-- speed -->
-            <div class="speed-wrap">
-              <button class="speed-btn active" data-speed="1">1×</button>
-              <button class="speed-btn" data-speed="1.25">1.25×</button>
-              <button class="speed-btn" data-speed="1.5">1.5×</button>
-              <button class="speed-btn" data-speed="2">2×</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="track" id="track-2">
-        <h1 class="track-title">Song Title Two</h1>
-        <p class="track-meta">2024</p>
-        <div class="player" data-player>
-          <div class="progress-wrap">
-            <span class="time current">0:00</span>
-            <div class="progress-bar"><div class="progress-fill"></div></div>
-            <span class="time duration">0:00</span>
-          </div>
-          <div class="controls">
-            <button class="ctrl-btn btn-back"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/><text x="7.5" y="15.5" font-size="5" fill="currentColor" font-family="sans-serif">10</text></svg></button>
-            <button class="ctrl-btn btn-play"><svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="icon-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
-            <button class="ctrl-btn btn-fwd"><svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/><text x="7.5" y="15.5" font-size="5" fill="currentColor" font-family="sans-serif">10</text></svg></button>
-            <div class="speed-wrap">
-              <button class="speed-btn active" data-speed="1">1×</button>
-              <button class="speed-btn" data-speed="1.25">1.25×</button>
-              <button class="speed-btn" data-speed="1.5">1.5×</button>
-              <button class="speed-btn" data-speed="2">2×</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="track" id="track-3">
-        <h1 class="track-title">Song Title Three</h1>
-        <p class="track-meta">2024</p>
-        <div class="player" data-player>
-          <div class="progress-wrap">
-            <span class="time current">0:00</span>
-            <div class="progress-bar"><div class="progress-fill"></div></div>
-            <span class="time duration">0:00</span>
-          </div>
-          <div class="controls">
-            <button class="ctrl-btn btn-back"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/><text x="7.5" y="15.5" font-size="5" fill="currentColor" font-family="sans-serif">10</text></svg></button>
-            <button class="ctrl-btn btn-play"><svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="icon-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
-            <button class="ctrl-btn btn-fwd"><svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/><text x="7.5" y="15.5" font-size="5" fill="currentColor" font-family="sans-serif">10</text></svg></button>
-            <div class="speed-wrap">
-              <button class="speed-btn active" data-speed="1">1×</button>
-              <button class="speed-btn" data-speed="1.25">1.25×</button>
-              <button class="speed-btn" data-speed="1.5">1.5×</button>
-              <button class="speed-btn" data-speed="2">2×</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="track" id="track-4">
-        <h1 class="track-title">Song Title Four</h1>
-        <p class="track-meta">2023</p>
-        <div class="player" data-player>
-          <div class="progress-wrap">
-            <span class="time current">0:00</span>
-            <div class="progress-bar"><div class="progress-fill"></div></div>
-            <span class="time duration">0:00</span>
-          </div>
-          <div class="controls">
-            <button class="ctrl-btn btn-back"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/><text x="7.5" y="15.5" font-size="5" fill="currentColor" font-family="sans-serif">10</text></svg></button>
-            <button class="ctrl-btn btn-play"><svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="icon-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
-            <button class="ctrl-btn btn-fwd"><svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/><text x="7.5" y="15.5" font-size="5" fill="currentColor" font-family="sans-serif">10</text></svg></button>
-            <div class="speed-wrap">
-              <button class="speed-btn active" data-speed="1">1×</button>
-              <button class="speed-btn" data-speed="1.25">1.25×</button>
-              <button class="speed-btn" data-speed="1.5">1.5×</button>
-              <button class="speed-btn" data-speed="2">2×</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="track" id="track-5">
-        <h1 class="track-title">Song Title Five</h1>
-        <p class="track-meta">2023</p>
-        <div class="player" data-player>
-          <div class="progress-wrap">
-            <span class="time current">0:00</span>
-            <div class="progress-bar"><div class="progress-fill"></div></div>
-            <span class="time duration">0:00</span>
-          </div>
-          <div class="controls">
-            <button class="ctrl-btn btn-back"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/><text x="7.5" y="15.5" font-size="5" fill="currentColor" font-family="sans-serif">10</text></svg></button>
-            <button class="ctrl-btn btn-play"><svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="icon-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
-            <button class="ctrl-btn btn-fwd"><svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/><text x="7.5" y="15.5" font-size="5" fill="currentColor" font-family="sans-serif">10</text></svg></button>
-            <div class="speed-wrap">
-              <button class="speed-btn active" data-speed="1">1×</button>
-              <button class="speed-btn" data-speed="1.25">1.25×</button>
-              <button class="speed-btn" data-speed="1.5">1.5×</button>
-              <button class="speed-btn" data-speed="2">2×</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </main>
   </div>
 
@@ -485,121 +351,160 @@
     });
     document.addEventListener('mouseleave', () => cursor.style.opacity = '0');
     document.addEventListener('mouseenter', () => cursor.style.opacity = '0.7');
-    document.querySelectorAll('[data-hover], a, button, li').forEach(el => {
+    function addHover(el) {
       el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
       el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+    }
+    document.querySelectorAll('[data-hover], a').forEach(addHover);
+
+    // ── Helpers ────────────────────────────────────────────────
+    function fmt(s) {
+      if (!s || isNaN(s)) return '0:00';
+      const m = Math.floor(s / 60);
+      return `${m}:${Math.floor(s % 60).toString().padStart(2,'0')}`;
+    }
+
+    function svg(path, extra = '') {
+      return `<svg viewBox="0 0 24 24" ${extra} fill="currentColor"><path d="${path}"/></svg>`;
+    }
+
+    // ── Build player panel HTML ────────────────────────────────
+    function makePanel(id, title, meta) {
+      const speedOptions = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2]
+        .map(s => `<option value="${s}"${s === 1 ? ' selected' : ''}>${s}×</option>`)
+        .join('');
+
+      return `
+        <div class="track" id="${id}">
+          <h1 class="track-title">${title}</h1>
+          <p class="track-meta">${meta}</p>
+          <div class="player">
+
+            <div class="progress-wrap">
+              <span class="time current">0:00</span>
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+              <span class="time duration">0:00</span>
+            </div>
+
+            <div class="controls">
+              <button class="ctrl-btn btn-back" title="−10 seconds">
+                ${svg('M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z')}
+              </button>
+
+              <button class="ctrl-btn btn-play" title="Play / Pause">
+                ${svg('M8 5v14l11-7z', 'class="icon-play"')}
+                ${svg('M6 19h4V5H6v14zm8-14v14h4V5h-4z', 'class="icon-pause" style="display:none"')}
+              </button>
+
+              <button class="ctrl-btn btn-fwd" title="+10 seconds">
+                ${svg('M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z')}
+              </button>
+            </div>
+
+            <div class="controls-row2">
+              <div class="volume-wrap">
+                <span class="volume-icon">
+                  ${svg('M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z')}
+                </span>
+                <input class="volume-slider" type="range" min="0" max="1" step="0.01" value="1" title="Volume" />
+              </div>
+
+              <div class="speed-wrap">
+                <span class="speed-label">Speed</span>
+                <select class="speed-select" title="Playback speed">
+                  ${speedOptions}
+                </select>
+              </div>
+            </div>
+
+          </div>
+        </div>`;
+    }
+
+    // ── Inject panels from index items ─────────────────────────
+    const playerCol  = document.getElementById('player-col');
+    const audio      = document.getElementById('audio');
+    const indexItems = document.querySelectorAll('.index-item');
+    const empty      = document.getElementById('empty-state');
+
+    indexItems.forEach(item => {
+      const id    = item.dataset.track;
+      const title = item.querySelector('.index-title').textContent;
+      const meta  = item.querySelector('.index-meta').textContent;
+      playerCol.insertAdjacentHTML('beforeend', makePanel(id, title, meta));
     });
 
-    // ── Audio engine ───────────────────────────────────────────
-    const audio     = document.getElementById('audio');
-    const indexItems = document.querySelectorAll('.index-item');
-    const tracks    = document.querySelectorAll('.track');
-    const empty     = document.getElementById('empty-state');
+    // ── Wire up each panel ─────────────────────────────────────
+    let activePanel = null;
 
-    let activeTrackEl = null; // currently visible .track div
+    document.querySelectorAll('.track').forEach(panel => {
+      const playBtn   = panel.querySelector('.btn-play');
+      const playIcon  = panel.querySelector('.icon-play');
+      const pauseIcon = panel.querySelector('.icon-pause');
+      const backBtn   = panel.querySelector('.btn-back');
+      const fwdBtn    = panel.querySelector('.btn-fwd');
+      const bar       = panel.querySelector('.progress-bar');
+      const fill      = panel.querySelector('.progress-fill');
+      const curEl     = panel.querySelector('.time.current');
+      const durEl     = panel.querySelector('.time.duration');
+      const volSlider = panel.querySelector('.volume-slider');
+      const speedSel  = panel.querySelector('.speed-select');
 
-    function fmt(s) {
-      if (isNaN(s)) return '0:00';
-      const m = Math.floor(s / 60);
-      const sec = Math.floor(s % 60).toString().padStart(2, '0');
-      return `${m}:${sec}`;
-    }
+      // add cursor hover to controls
+      [playBtn, backBtn, fwdBtn, bar, volSlider, speedSel].forEach(addHover);
 
-    function bindPlayer(trackEl) {
-      const playBtn  = trackEl.querySelector('.btn-play');
-      const playIcon = playBtn.querySelector('.icon-play');
-      const pauseIcon = playBtn.querySelector('.icon-pause');
-      const backBtn  = trackEl.querySelector('.btn-back');
-      const fwdBtn   = trackEl.querySelector('.btn-fwd');
-      const fill     = trackEl.querySelector('.progress-fill');
-      const bar      = trackEl.querySelector('.progress-bar');
-      const curTime  = trackEl.querySelector('.time.current');
-      const durTime  = trackEl.querySelector('.time.duration');
-      const speedBtns = trackEl.querySelectorAll('.speed-btn');
+      playBtn.addEventListener('click', () => audio.paused ? audio.play() : audio.pause());
+      backBtn.addEventListener('click', () => { audio.currentTime = Math.max(0, audio.currentTime - 10); });
+      fwdBtn.addEventListener('click',  () => { audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10); });
 
-      // play / pause
-      playBtn.onclick = () => {
-        if (audio.paused) { audio.play(); }
-        else { audio.pause(); }
-      };
+      volSlider.addEventListener('input', () => { audio.volume = volSlider.value; });
+      speedSel.addEventListener('change', () => { audio.playbackRate = parseFloat(speedSel.value); });
 
-      // skip ±10s
-      backBtn.onclick = () => { audio.currentTime = Math.max(0, audio.currentTime - 10); };
-      fwdBtn.onclick  = () => { audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10); };
-
-      // speed
-      speedBtns.forEach(btn => {
-        btn.onclick = () => {
-          audio.playbackRate = parseFloat(btn.dataset.speed);
-          speedBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-        };
-      });
-
-      // scrub on click
       bar.addEventListener('click', e => {
         const rect = bar.getBoundingClientRect();
-        const pct  = (e.clientX - rect.left) / rect.width;
-        audio.currentTime = pct * (audio.duration || 0);
+        audio.currentTime = ((e.clientX - rect.left) / rect.width) * (audio.duration || 0);
       });
 
-      // sync audio events → UI
       function syncUI() {
-        if (activeTrackEl !== trackEl) return;
+        if (activePanel !== panel) return;
         const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
-        fill.style.width   = pct + '%';
-        curTime.textContent = fmt(audio.currentTime);
-        durTime.textContent = fmt(audio.duration);
-
-        if (audio.paused) {
-          playIcon.style.display  = '';
-          pauseIcon.style.display = 'none';
-        } else {
-          playIcon.style.display  = 'none';
-          pauseIcon.style.display = '';
-        }
+        fill.style.width    = pct + '%';
+        curEl.textContent   = fmt(audio.currentTime);
+        durEl.textContent   = fmt(audio.duration);
+        playIcon.style.display  = audio.paused ? '' : 'none';
+        pauseIcon.style.display = audio.paused ? 'none' : '';
       }
 
-      audio.addEventListener('timeupdate', syncUI);
-      audio.addEventListener('durationchange', syncUI);
-      audio.addEventListener('play',  syncUI);
-      audio.addEventListener('pause', syncUI);
-      audio.addEventListener('ended', syncUI);
-    }
+      ['timeupdate','durationchange','play','pause','ended'].forEach(ev =>
+        audio.addEventListener(ev, syncUI)
+      );
+    });
 
-    // bind all track panels once
-    tracks.forEach(t => bindPlayer(t));
-
-    // index click — switch track
+    // ── Index click ────────────────────────────────────────────
     indexItems.forEach(item => {
       item.addEventListener('click', () => {
-        const trackId = item.dataset.track;
-        const src     = item.dataset.src;
-
-        // update index highlight
         indexItems.forEach(i => i.classList.remove('active'));
         item.classList.add('active');
 
-        // hide all tracks, show selected
-        tracks.forEach(t => t.classList.remove('visible'));
+        document.querySelectorAll('.track').forEach(t => t.classList.remove('visible'));
         empty.style.display = 'none';
 
-        const trackEl = document.getElementById(trackId);
-        if (!trackEl) return;
-        trackEl.classList.add('visible');
-        activeTrackEl = trackEl;
+        const panel = document.getElementById(item.dataset.track);
+        if (!panel) return;
+        panel.classList.add('visible');
+        activePanel = panel;
 
-        // reset speed buttons to 1×
-        trackEl.querySelectorAll('.speed-btn').forEach(b => {
-          b.classList.toggle('active', b.dataset.speed === '1');
-        });
+        // reset controls to defaults
+        panel.querySelector('.volume-slider').value = audio.volume;
+        panel.querySelector('.speed-select').value  = '1';
 
-        // load & play
         audio.pause();
-        audio.src = src;
+        audio.src = item.dataset.src;
         audio.playbackRate = 1;
         audio.load();
-        audio.play().catch(() => {}); // browser may block autoplay; user can tap play
+        audio.play().catch(() => {});
       });
     });
   </script>
