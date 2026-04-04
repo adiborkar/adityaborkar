@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guestbook — Aditya Borkar</title>
+  <style>
+    @font-face {
+      font-family: 'Zodiak';
+      src: url('fonts/Zodiak-Variable.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Zodiak';
+      src: url('fonts/Zodiak-VariableItalic.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: italic;
+      font-display: swap;
+    }
+  </style>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --blue: #0b5aff;
+      --bg: #fffff2;
+      --rule: rgba(11, 90, 255, 0.22);
+    }
+
+    ::selection { background: rgba(11, 90, 255, 0.15); }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--blue);
+      font-family: 'Zodiak', Georgia, serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      -webkit-font-smoothing: antialiased;
+      cursor: none;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    * { cursor: none !important; }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── CUSTOM CURSOR ─────────────────────────────────────── */
+    #cursor {
+      position: fixed;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--blue);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s ease, opacity 0.15s ease;
+      will-change: transform;
+    }
+
+    #cursor.hovering {
+      transform: translate(-50%, -50%) scale(2.2);
+      opacity: 0.4;
+    }
+
+    /* ── NAV ───────────────────────────────────────────────── */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 44px 52px 28px;
+      border-bottom: 1px solid var(--rule);
+      flex-shrink: 0;
+    }
+
+    .nav-name {
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.3px;
+      transition: opacity 0.15s;
+    }
+
+    .nav-name:hover { opacity: 0.5; }
+
+    .nav-right {
+      display: flex;
+      align-items: baseline;
+      gap: 28px;
+    }
+
+    .nav-label {
+      font-size: 14px;
+      opacity: 0.5;
+    }
+
+    .nav-back {
+      font-size: 18px;
+      letter-spacing: -0.3px;
+      transition: opacity 0.15s;
+    }
+
+    .nav-back:hover { opacity: 0.5; }
+
+    /* ── IFRAME ────────────────────────────────────────────── */
+    .embed-wrap {
+      flex: 1;
+      position: relative;
+    }
+
+    .embed-wrap iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Fallback shown if iframe is blocked */
+    .embed-fallback {
+      display: none;
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .embed-fallback p {
+      font-size: 20px;
+      opacity: 0.6;
+    }
+
+    .embed-fallback a {
+      font-size: 18px;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      transition: opacity 0.15s;
+    }
+
+    .embed-fallback a:hover { opacity: 0.5; }
+
+    @media (max-width: 860px) {
+      .nav { padding: 32px 28px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+
+  <nav class="nav">
+    <a class="nav-name" href="index.html" data-hover>Aditya Borkar</a>
+    <div class="nav-right">
+      <span class="nav-label">Guestbook</span>
+      <a class="nav-back" href="index.html" data-hover>← Back</a>
+    </div>
+  </nav>
+
+  <div class="embed-wrap">
+    <iframe
+      id="guestbook-frame"
+      src="https://www.yourworldoftext.com/~adityaborkar/portfolio"
+      title="Guestbook">
+    </iframe>
+    <div class="embed-fallback" id="fallback">
+      <p>The guestbook can't be embedded directly — open it in a new tab instead.</p>
+      <a href="https://www.yourworldoftext.com/~adityaborkar/portfolio" target="_blank" rel="noopener" data-hover>Open Guestbook ↗</a>
+    </div>
+  </div>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+    });
+
+    document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
+    document.addEventListener('mouseenter', () => { cursor.style.opacity = '0.7'; });
+
+    document.querySelectorAll('[data-hover], a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+    });
+
+    // Detect if iframe is blocked and show fallback
+    const frame = document.getElementById('guestbook-frame');
+    const fallback = document.getElementById('fallback');
+
+    frame.addEventListener('error', () => {
+      frame.style.display = 'none';
+      fallback.style.display = 'flex';
+    });
+  </script>
+
+</body>
+</html>
