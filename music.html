@@ -269,6 +269,38 @@
     .speed-select:hover { opacity: 0.6; }
     .speed-select option { background: var(--bg); color: var(--blue); }
 
+    /* ── CREDITS ───────────────────────────────────────────── */
+    .credits {
+      margin-top: 36px;
+      padding-top: 28px;
+      border-top: 1px solid var(--rule);
+    }
+
+    .credits-label {
+      font-size: 13px;
+      opacity: 0.5;
+      margin-bottom: 14px;
+    }
+
+    .credit-row {
+      display: flex;
+      gap: 24px;
+      font-size: 15px;
+      line-height: 1.5;
+      padding: 5px 0;
+      border-top: 1px solid var(--rule);
+    }
+
+    .credit-row:last-child { border-bottom: 1px solid var(--rule); }
+
+    .credit-role {
+      opacity: 0.5;
+      flex-shrink: 0;
+      width: 140px;
+    }
+
+    .credit-name { letter-spacing: -0.3px; }
+
     /* ── RESPONSIVE ────────────────────────────────────────── */
     @media (max-width: 860px) {
       .nav { padding: 32px 28px 0; }
@@ -301,27 +333,60 @@
       <p class="index-label">Music</p>
       <ul class="index-list" id="index-list">
 
-        <li class="index-item" data-track="track-1" data-src="audio/track-1.mp3" data-hover>
+        <!-- ── Credits format ──────────────────────────────────
+             Add as many data-credit-* attributes as you need.
+             Each one becomes a row: Role → Name(s)
+             Example: data-credit-composer="Your Name"
+                      data-credit-saxophone="Your Name"
+                      data-credit-piano="Musician Name"
+        ──────────────────────────────────────────────────────── -->
+
+        <li class="index-item"
+            data-track="track-1"
+            data-src="audio/track-1.mp3"
+            data-credit-composer="Composer Name"
+            data-credit-saxophone="Musician Name"
+            data-hover>
           <span class="index-title">Song Title One</span>
           <span class="index-meta">2025</span>
         </li>
 
-        <li class="index-item" data-track="track-2" data-src="audio/track-2.mp3" data-hover>
+        <li class="index-item"
+            data-track="track-2"
+            data-src="audio/track-2.mp3"
+            data-credit-composer="Composer Name"
+            data-credit-saxophone="Musician Name"
+            data-hover>
           <span class="index-title">Song Title Two</span>
           <span class="index-meta">2024</span>
         </li>
 
-        <li class="index-item" data-track="track-3" data-src="audio/track-3.mp3" data-hover>
+        <li class="index-item"
+            data-track="track-3"
+            data-src="audio/track-3.mp3"
+            data-credit-composer="Composer Name"
+            data-credit-saxophone="Musician Name"
+            data-hover>
           <span class="index-title">Song Title Three</span>
           <span class="index-meta">2024</span>
         </li>
 
-        <li class="index-item" data-track="track-4" data-src="audio/track-4.mp3" data-hover>
+        <li class="index-item"
+            data-track="track-4"
+            data-src="audio/track-4.mp3"
+            data-credit-composer="Composer Name"
+            data-credit-saxophone="Musician Name"
+            data-hover>
           <span class="index-title">Song Title Four</span>
           <span class="index-meta">2023</span>
         </li>
 
-        <li class="index-item" data-track="track-5" data-src="audio/track-5.mp3" data-hover>
+        <li class="index-item"
+            data-track="track-5"
+            data-src="audio/track-5.mp3"
+            data-credit-composer="Composer Name"
+            data-credit-saxophone="Musician Name"
+            data-hover>
           <span class="index-title">Song Title Five</span>
           <span class="index-meta">2023</span>
         </li>
@@ -363,10 +428,23 @@
     }
 
     // ── Build player panel HTML ────────────────────────────────
-    function makePanel(id, title, meta) {
+    function makePanel(id, title, meta, credits) {
       const speedOptions = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2]
         .map(s => `<option value="${s}"${s === 1 ? ' selected' : ''}>${s}×</option>`)
         .join('');
+
+      const creditRows = credits.map(({ role, name }) =>
+        `<div class="credit-row">
+          <span class="credit-role">${role}</span>
+          <span class="credit-name">${name}</span>
+        </div>`
+      ).join('');
+
+      const creditsBlock = creditRows ? `
+        <div class="credits">
+          <p class="credits-label">Credits</p>
+          ${creditRows}
+        </div>` : '';
 
       return `
         <div class="track" id="${id}">
@@ -412,6 +490,7 @@
             </div>
 
           </div>
+          ${creditsBlock}
         </div>`;
     }
 
@@ -425,7 +504,16 @@
       const id    = item.dataset.track;
       const title = item.querySelector('.index-title').textContent;
       const meta  = item.querySelector('.index-meta').textContent;
-      playerCol.insertAdjacentHTML('beforeend', makePanel(id, title, meta));
+
+      // collect all data-credit-* attributes into [{role, name}]
+      const credits = Object.entries(item.dataset)
+        .filter(([key]) => key.startsWith('credit'))
+        .map(([key, name]) => ({
+          role: key.replace('credit', '').replace(/([A-Z])/g, ' $1').trim(),
+          name
+        }));
+
+      playerCol.insertAdjacentHTML('beforeend', makePanel(id, title, meta, credits));
     });
 
     // ── Wire up each panel ─────────────────────────────────────
