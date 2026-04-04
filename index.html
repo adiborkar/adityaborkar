@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aditya Borkar</title>
+  <style>
+    @font-face {
+      font-family: 'Zodiak';
+      src: url('fonts/Zodiak-Variable.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Zodiak';
+      src: url('fonts/Zodiak-VariableItalic.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: italic;
+      font-display: swap;
+    }
+  </style>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --blue: #0b5aff;
+      --blue-full: #0b5aff;
+      --bg: #fffff2;
+      --rule: rgba(11, 90, 255, 0.22);
+    }
+
+    ::selection {
+      background: rgba(11, 90, 255, 0.15);
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--blue);
+      font-family: 'Zodiak', Georgia, serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      -webkit-font-smoothing: antialiased;
+      cursor: none;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ── CUSTOM CURSOR ─────────────────────────────────────── */
+    #cursor {
+      position: fixed;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--blue-full);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s ease, opacity 0.15s ease;
+      will-change: transform;
+    }
+
+    #cursor.hovering {
+      transform: translate(-50%, -50%) scale(2.2);
+      opacity: 0.4;
+    }
+
+    /* ── PAGE LAYOUT ───────────────────────────────────────── */
+    .page {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr;
+      min-height: 100vh;
+      padding: 44px 52px 60px;
+      column-gap: 0;
+      row-gap: 0;
+    }
+
+    /* ── TOP LEFT: name ────────────────────────────────────── */
+    .name {
+      grid-column: 1;
+      grid-row: 1;
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -0.3px;
+      align-self: start;
+    }
+
+    /* ── TOP RIGHT: social links ───────────────────────────── */
+    .social {
+      grid-column: 2;
+      grid-row: 1;
+      padding-left: 56px;
+      align-self: start;
+    }
+
+    .social a {
+      display: block;
+      font-size: 18px;
+      line-height: 1.6;
+      letter-spacing: -0.3px;
+      transition: opacity 0.15s;
+    }
+
+    .social a:hover {
+      opacity: 0.5;
+    }
+
+    /* ── BOTTOM LEFT: bio ──────────────────────────────────── */
+    .bio {
+      grid-column: 1;
+      grid-row: 2;
+      align-self: center;
+      padding-right: 56px;
+      padding-top: 40px;
+    }
+
+    .bio p {
+      font-size: 32px;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+    }
+
+    .bio a {
+      text-decoration: underline;
+      text-decoration-color: var(--blue);
+      text-underline-offset: 4px;
+      transition: opacity 0.15s;
+    }
+
+    .bio a:hover {
+      opacity: 0.55;
+    }
+
+    /* ── BOTTOM RIGHT: project list ────────────────────────── */
+    .projects {
+      grid-column: 2;
+      grid-row: 2;
+      padding-left: 56px;
+      padding-top: 80px;
+      align-self: end;
+    }
+
+    .project-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-top: 1px solid var(--rule);
+      gap: 16px;
+      transition: opacity 0.15s;
+    }
+
+    .project-row:last-child {
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .project-row:hover {
+      opacity: 0.55;
+    }
+
+    .project-row a {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      font-size: 18px;
+      letter-spacing: -0.5px;
+      line-height: 1.3;
+    }
+
+    .project-row.no-link span.proj-name {
+      font-size: 18px;
+      letter-spacing: -0.5px;
+      line-height: 1.3;
+    }
+
+    .proj-arrow {
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    .proj-year {
+      font-size: 14px;
+      letter-spacing: -0.3px;
+      opacity: 0.65;
+      flex-shrink: 0;
+    }
+
+    /* ── COLLAGE SECTION ───────────────────────────────────── */
+    .collage-section {
+      padding: 80px 52px 80px;
+      border-top: 1px solid var(--rule);
+    }
+
+    .collage-label {
+      font-size: 14px;
+      letter-spacing: -0.3px;
+      opacity: 0.5;
+      margin-bottom: 28px;
+    }
+
+    /* CSS columns: true masonry flow */
+    .collage-grid {
+      columns: 4;
+      column-gap: 10px;
+    }
+
+    .collage-item {
+      break-inside: avoid;
+      margin-bottom: 10px;
+      overflow: hidden;
+      background: rgba(11, 90, 255, 0.06);
+      position: relative;
+      cursor: none;
+    }
+
+    /* Drop images straight into .collage-item — they fill naturally */
+    .collage-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: opacity 0.2s ease;
+    }
+
+    .collage-item:hover img {
+      opacity: 0.88;
+    }
+
+    /* Empty placeholder shown when no <img> is inside */
+    .collage-item:not(:has(img)) {
+      aspect-ratio: var(--ratio, 1 / 1.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .collage-item:not(:has(img))::after {
+      content: '+';
+      font-size: 22px;
+      opacity: 0.2;
+      color: var(--blue-full);
+    }
+
+    /* Vary aspect ratios of empty placeholders for visual interest */
+    .collage-item:nth-child(3n)   { --ratio: 1 / 0.75; }
+    .collage-item:nth-child(3n+1) { --ratio: 1 / 1.4;  }
+    .collage-item:nth-child(3n+2) { --ratio: 1 / 1;    }
+
+    /* ── RESPONSIVE ────────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .page {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        padding: 32px 28px 48px;
+      }
+
+      .name {
+        grid-column: 1;
+        grid-row: 1;
+        font-size: 28px;
+        line-height: 32px;
+        margin-bottom: 24px;
+      }
+
+      .social {
+        grid-column: 1;
+        grid-row: 2;
+        padding-left: 0;
+        margin-bottom: 40px;
+      }
+
+      .bio {
+        grid-column: 1;
+        grid-row: 3;
+        padding-right: 0;
+        margin-bottom: 40px;
+        max-width: 100%;
+      }
+
+      .bio p {
+        font-size: 20px;
+      }
+
+      .projects {
+        grid-column: 1;
+        grid-row: 4;
+        padding-left: 0;
+        padding-top: 0;
+      }
+
+      .collage-section { padding: 48px 28px 60px; }
+      .collage-grid { columns: 2; column-gap: 6px; }
+      .collage-item { margin-bottom: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+
+  <div class="page">
+
+    <!-- TOP LEFT: name -->
+    <header class="name">Aditya Borkar</header>
+
+    <!-- TOP RIGHT: social links -->
+    <nav class="social">
+      <a href="mailto:aditya.borkar1004@gmail.com" data-hover>Email</a>
+      <a href="https://www.linkedin.com/in/aditya-borkar-3964a3290" target="_blank" rel="noopener" data-hover>LinkedIn</a>
+      <a href="https://www.instagram.com/adiitya.b/" target="_blank" rel="noopener" data-hover>Instagram</a>
+      <a href="#" data-hover>CV</a>
+    </nav>
+
+    <!-- BOTTOM LEFT: bio -->
+    <div class="bio">
+      <p>
+        Creative Director currently working
+        in Singapore. Makes music, plays
+        the saxophone, and is currently
+        studying PPE at NUS.<br><br>
+        Feel free to <a href="mailto:aditya.borkar1004@gmail.com" data-hover>contact me</a> for collaborations.
+      </p>
+    </div>
+
+    <!-- BOTTOM RIGHT: project list -->
+    <main class="projects">
+
+      <div class="project-row">
+        <a href="#" data-hover>
+          <span>Project One</span><span class="proj-arrow">↗</span>
+        </a>
+        <span class="proj-year">2025</span>
+      </div>
+
+      <div class="project-row">
+        <a href="#" data-hover>
+          <span>Project Two</span><span class="proj-arrow">↗</span>
+        </a>
+        <span class="proj-year">2025</span>
+      </div>
+
+      <div class="project-row">
+        <a href="#" data-hover>
+          <span>Project Three</span><span class="proj-arrow">↗</span>
+        </a>
+        <span class="proj-year">2024</span>
+      </div>
+
+      <div class="project-row">
+        <a href="#" data-hover>
+          <span>Project Four</span><span class="proj-arrow">↗</span>
+        </a>
+        <span class="proj-year">2024</span>
+      </div>
+
+      <div class="project-row">
+        <a href="#" data-hover>
+          <span>Project Five</span><span class="proj-arrow">↗</span>
+        </a>
+        <span class="proj-year">2024</span>
+      </div>
+
+      <div class="project-row">
+        <a href="#" data-hover>
+          <span>Project Six</span><span class="proj-arrow">↗</span>
+        </a>
+        <span class="proj-year">2023</span>
+      </div>
+
+      <div class="project-row">
+        <a href="#" data-hover>
+          <span>Project Seven</span><span class="proj-arrow">↗</span>
+        </a>
+        <span class="proj-year">2023</span>
+      </div>
+
+      <div class="project-row">
+        <a href="#" data-hover>
+          <span>Project Eight</span><span class="proj-arrow">↗</span>
+        </a>
+        <span class="proj-year">2023</span>
+      </div>
+
+      <div class="project-row">
+        <a href="#" data-hover>
+          <span>Project Nine</span><span class="proj-arrow">↗</span>
+        </a>
+        <span class="proj-year">2022</span>
+      </div>
+
+      <div class="project-row">
+        <a href="#" data-hover>
+          <span>Project Ten</span><span class="proj-arrow">↗</span>
+        </a>
+        <span class="proj-year">2022</span>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ── COLLAGE SECTION ────────────────────────────────────────
+       To add an image: place an <img src="your-file.jpg"> inside
+       any .collage-item div. Images fill automatically.
+       To add more slots: duplicate any <div class="collage-item"> block.
+  ──────────────────────────────────────────────────────────── -->
+  <section class="collage-section">
+    <p class="collage-label">Work</p>
+    <div class="collage-grid">
+
+      <div class="collage-item">
+        <!-- <img src="your-image.jpg" alt="" /> -->
+      </div>
+
+      <div class="collage-item">
+        <!-- <img src="your-image.jpg" alt="" /> -->
+      </div>
+
+      <div class="collage-item">
+        <!-- <img src="your-image.jpg" alt="" /> -->
+      </div>
+
+      <div class="collage-item">
+        <!-- <img src="your-image.jpg" alt="" /> -->
+      </div>
+
+      <div class="collage-item">
+        <!-- <img src="your-image.jpg" alt="" /> -->
+      </div>
+
+      <div class="collage-item">
+        <!-- <img src="your-image.jpg" alt="" /> -->
+      </div>
+
+      <div class="collage-item">
+        <!-- <img src="your-image.jpg" alt="" /> -->
+      </div>
+
+      <div class="collage-item">
+        <!-- <img src="your-image.jpg" alt="" /> -->
+      </div>
+
+      <div class="collage-item">
+        <!-- <img src="your-image.jpg" alt="" /> -->
+      </div>
+
+      <div class="collage-item">
+        <!-- <img src="your-image.jpg" alt="" /> -->
+      </div>
+
+      <div class="collage-item">
+        <!-- <img src="your-image.jpg" alt="" /> -->
+      </div>
+
+      <div class="collage-item">
+        <!-- <img src="your-image.jpg" alt="" /> -->
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    // ── Custom cursor ──────────────────────────────────────────
+    const cursor = document.getElementById('cursor');
+
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+    });
+
+    document.addEventListener('mouseleave', () => {
+      cursor.style.opacity = '0';
+    });
+    document.addEventListener('mouseenter', () => {
+      cursor.style.opacity = '0.7';
+    });
+
+    // Enlarge cursor on interactive elements
+    document.querySelectorAll('[data-hover], a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+    });
+  </script>
+
+</body>
+</html>
