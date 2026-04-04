@@ -628,6 +628,13 @@
         audio.play().catch(() => {});
       });
     });
+
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT') {
+        e.preventDefault();
+        audio.paused ? audio.play() : audio.pause();
+      }
+    });
   </script>
 
 </body>
