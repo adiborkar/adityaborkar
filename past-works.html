@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Past Works — Aditya Borkar</title>
+  <style>
+    @font-face {
+      font-family: 'Zodiak';
+      src: url('fonts/Zodiak-Variable.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Zodiak';
+      src: url('fonts/Zodiak-VariableItalic.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: italic;
+      font-display: swap;
+    }
+  </style>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --blue: #0b5aff;
+      --bg: #fffff2;
+      --rule: rgba(11, 90, 255, 0.22);
+    }
+
+    ::selection { background: rgba(11, 90, 255, 0.15); }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--blue);
+      font-family: 'Zodiak', Georgia, serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      -webkit-font-smoothing: antialiased;
+      cursor: none;
+    }
+
+    * { cursor: none !important; }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── CUSTOM CURSOR ─────────────────────────────────────── */
+    #cursor {
+      position: fixed;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--blue);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s ease, opacity 0.15s ease;
+      will-change: transform;
+    }
+
+    #cursor.hovering {
+      transform: translate(-50%, -50%) scale(2.2);
+      opacity: 0.4;
+    }
+
+    /* ── NAV ───────────────────────────────────────────────── */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 44px 52px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .nav-name {
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.3px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+    }
+
+    .nav-links a {
+      font-size: 18px;
+      letter-spacing: -0.3px;
+      transition: opacity 0.15s;
+    }
+
+    .nav-links a:hover { opacity: 0.5; }
+
+    /* ── PAGE LAYOUT ───────────────────────────────────────── */
+    .page {
+      padding: 52px 52px 80px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 44px;
+    }
+
+    .page-title {
+      font-size: 14px;
+      opacity: 0.5;
+    }
+
+    /* ── NOTEBOOK GRID ─────────────────────────────────────── */
+    .notebook-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .notebook-card {
+      border: 1px solid var(--rule);
+      padding: 28px 28px 32px;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: background 0.15s;
+    }
+
+    .notebook-card:hover {
+      background: rgba(11, 90, 255, 0.03);
+    }
+
+    .card-tag {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.4;
+    }
+
+    .card-title {
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: -0.4px;
+    }
+
+    .card-body {
+      font-size: 15px;
+      line-height: 1.55;
+      opacity: 0.75;
+      margin-top: auto;
+    }
+
+    /* Empty card placeholder */
+    .notebook-card.empty {
+      border-style: dashed;
+      opacity: 0.3;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .notebook-card.empty::after {
+      content: '+';
+      font-size: 24px;
+      opacity: 0.4;
+    }
+
+    @media (max-width: 860px) {
+      .nav { padding: 32px 28px 28px; }
+      .page { padding: 40px 28px 60px; }
+      .notebook-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+
+  <!-- ── NAV ──────────────────────────────────────────────────── -->
+  <nav class="nav">
+    <a class="nav-name" href="index.html" data-hover>Aditya Borkar</a>
+    <div class="nav-links">
+      <a href="performances.html" data-hover>Performances</a>
+      <a href="music.html" data-hover>Music</a>
+      <a href="written-works.html" data-hover>Written Works</a>
+      <a href="current-works.html" data-hover>Current Works</a>
+    </div>
+  </nav>
+
+  <!-- ── MAIN ─────────────────────────────────────────────────── -->
+  <div class="page">
+
+    <div class="page-header">
+      <p class="page-title">Past Works</p>
+    </div>
+
+    <!-- ── NOTEBOOK GRID ──────────────────────────────────────────
+         To add a card: duplicate a .notebook-card block and fill in
+         .card-tag (category), .card-title, and .card-body (description).
+         To remove placeholder empties, delete .notebook-card.empty blocks.
+    ──────────────────────────────────────────────────────────── -->
+    <div class="notebook-grid">
+
+      <div class="notebook-card empty"></div>
+      <div class="notebook-card empty"></div>
+      <div class="notebook-card empty"></div>
+      <div class="notebook-card empty"></div>
+      <div class="notebook-card empty"></div>
+      <div class="notebook-card empty"></div>
+
+    </div>
+  </div>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+    });
+
+    document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
+    document.addEventListener('mouseenter', () => { cursor.style.opacity = '0.7'; });
+
+    document.querySelectorAll('[data-hover], a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+    });
+  </script>
+
+</body>
+</html>
