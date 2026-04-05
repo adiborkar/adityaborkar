@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <rect width="32" height="32" fill="#fffff2"/>
-  <!-- Outer A silhouette + inner counter, evenodd cuts out the counter -->
-  <path fill-rule="evenodd" fill="#0b5aff" d="
-    M16 2.5
-    L30 28 L31.5 28 L31.5 29.5 L24 29.5 L24 28
-    L21 21
-    L11 21
-    L8 28 L8 29.5 L0.5 29.5 L0.5 28 L2 28
-    Z
-    M16 7.5 L21.5 19 L10.5 19 Z
-  "/>
+  <!-- Left thick stroke -->
+  <polygon points="16,3 4.5,29 11.5,29" fill="#0b5aff"/>
+  <!-- Right thin stroke -->
+  <polygon points="16,3 21.5,29 26.5,29" fill="#0b5aff"/>
+  <!-- Left foot serif -->
+  <rect x="2" y="27" width="12" height="3.5" fill="#0b5aff"/>
+  <!-- Right foot serif -->
+  <rect x="20" y="27" width="9" height="3.5" fill="#0b5aff"/>
+  <!-- Crossbar -->
+  <rect x="11" y="17.5" width="10" height="2" fill="#0b5aff"/>
 </svg>
