@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Past Works — Aditya Borkar</title>
+  <title>Past Works / Experience — Aditya Borkar</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <style>
     @font-face {
@@ -178,6 +178,25 @@
       opacity: 0.4;
     }
 
+    /* ── CATEGORY COLOUR CODING ────────────────────────────── */
+    [data-category="work"]        { border-left: 3px solid #0b5aff; }
+    [data-category="music"]       { border-left: 3px solid #b45309; }
+    [data-category="sport"]       { border-left: 3px solid #15803d; }
+    [data-category="community"]   { border-left: 3px solid #0e7490; }
+    [data-category="leadership"]  { border-left: 3px solid #7c3aed; }
+    [data-category="service"]     { border-left: 3px solid #be123c; }
+    [data-category="events"]      { border-left: 3px solid #c2410c; }
+    [data-category="competition"] { border-left: 3px solid #4338ca; }
+
+    [data-category="work"]        .card-tag { color: #0b5aff; opacity: 1; }
+    [data-category="music"]       .card-tag { color: #b45309; opacity: 1; }
+    [data-category="sport"]       .card-tag { color: #15803d; opacity: 1; }
+    [data-category="community"]   .card-tag { color: #0e7490; opacity: 1; }
+    [data-category="leadership"]  .card-tag { color: #7c3aed; opacity: 1; }
+    [data-category="service"]     .card-tag { color: #be123c; opacity: 1; }
+    [data-category="events"]      .card-tag { color: #c2410c; opacity: 1; }
+    [data-category="competition"] .card-tag { color: #4338ca; opacity: 1; }
+
     @media (max-width: 860px) {
       .nav { padding: 28px 20px 20px; flex-wrap: wrap; gap: 12px; }
       .nav-links { gap: 16px; flex-wrap: wrap; }
@@ -212,7 +231,7 @@
   <div class="page">
 
     <div class="page-header">
-      <p class="page-title">Past Works</p>
+      <p class="page-title">Past Works / Experience</p>
     </div>
 
     <!-- ── NOTEBOOK GRID ──────────────────────────────────────────
@@ -222,115 +241,115 @@
     ──────────────────────────────────────────────────────────── -->
     <div class="notebook-grid">
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="sport">
         <span class="card-tag">Sport</span>
         <p class="card-title">Tchoukball Team Captain</p>
         <p class="card-body">Tembusu College, 2026 – Present. Captaining the Tembusu College tchoukball team.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="community">
         <span class="card-tag">Community</span>
         <p class="card-title">Barista</p>
         <p class="card-body">Tembusu College, 2026 – Present. An interest group in Tembusu that builds a community around coffee.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="leadership">
         <span class="card-tag">Leadership</span>
         <p class="card-title">Arts Council Vice-Director</p>
         <p class="card-body">Tembusu College, Sep 2025 – Present. Helping lead the arts council at Tembusu College, organising events and supporting the creative community on campus.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="community">
         <span class="card-tag">Community</span>
         <p class="card-title">PPE Club Member</p>
         <p class="card-body">NUS FASS PPE Club, Sep 2025 – Present. Planning and executing events for the Philosophy, Politics and Economics student community at NUS.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="music">
         <span class="card-tag">Music</span>
         <p class="card-title">NUS Jazz Band</p>
         <p class="card-body">Member, Aug 2025 – Present. Playing alto saxophone with the NUS Jazz Band, performing at university concerts and events across Singapore.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="work">
         <span class="card-tag">Work</span>
         <p class="card-title">Farmhand</p>
         <p class="card-body">Andalucía, Spain, Apr – May 2025. Worked on a farm in southern Spain, tending to chickens, horses, and an olive oil plantation.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="work">
         <span class="card-tag">Work</span>
         <p class="card-title">Line Cook</p>
         <p class="card-body">Fork In The Jungle, Mar – Aug 2025. Part-time line cook, responsible for daily kitchen operations and food preparation in a fast-paced restaurant environment.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="service">
         <span class="card-tag">Service</span>
         <p class="card-title">Officer of the SAF</p>
         <p class="card-body">Singapore Army, Nov 2023 – Apr 2025. Full-time National Service officer, leading a team and managing daily operations, logistics, and project planning.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="work">
         <span class="card-tag">Work</span>
         <p class="card-title">Pizza Maker</p>
         <p class="card-body">Mr. Kneady's, Jun 2020 – Dec 2022. Part-time pizza maker over two and a half years, developing skills in kitchen operations and food craft.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="music">
         <span class="card-tag">Music</span>
         <p class="card-title">Pocket Pugs</p>
         <p class="card-body">A pop/jazz band that performed in Singapore from 2020–2022. Performed at TONES Music Festival and Singapore Night Festival 2021 and 2022.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="events">
         <span class="card-tag">Events</span>
         <p class="card-title">Music Festival Director</p>
         <p class="card-body">TONES Music Festival, 2021. Head organiser of TONES, an annual college concert contributing to Singapore's local arts scene, managing collaborations with external partners and stakeholders.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="competition">
         <span class="card-tag">Competition</span>
         <p class="card-title">Case Competition Participant</p>
         <p class="card-body">2021. Competed in the Tiger Global Case Competition, developing and presenting business solutions under time pressure.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="music">
         <span class="card-tag">Music</span>
         <p class="card-title">Wind Ensemble Leader</p>
         <p class="card-body">2020–2021. Led the Wind Ensemble, directing rehearsals and coordinating performances.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="events">
         <span class="card-tag">Events</span>
         <p class="card-title">Charity Fundraiser Organiser</p>
         <p class="card-body">2020. Performed as a saxophonist in the OneHope fundraising concert, successfully raising $11,305 for The RICE Company.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="events">
         <span class="card-tag">Events</span>
         <p class="card-title">Singapore Night Festival Organiser</p>
         <p class="card-body">2020. Adapted event planning processes in response to Covid-19 challenges, gaining experience in the operational and logistical aspects of arts event management.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="events">
         <span class="card-tag">Events</span>
         <p class="card-title">Charity Fundraiser Creative Director</p>
         <p class="card-body">Colour the Rainbow, 2020. Key organiser and performer in a charity concert that raised $3,200 for Club Rainbow, supporting children with chronic illnesses and their families.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="sport">
         <span class="card-tag">Sport</span>
         <p class="card-title">Tchoukball Team Captain</p>
         <p class="card-body">Tchoukball CAS, 2019–2022. Competed over four years and won the A-Division Nationals championship.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="events">
         <span class="card-tag">Events</span>
         <p class="card-title">Charity Fundraiser Organiser and Performer</p>
         <p class="card-body">Sunburst Fundraising Concert, 2019. Performed and helped organise the Sunburst Fundraising Concert.</p>
       </div>
 
-      <div class="notebook-card">
+      <div class="notebook-card" data-category="music">
         <span class="card-tag">Music</span>
         <p class="card-title">WBAS Performer</p>
         <p class="card-body">Wind Bands Association of Singapore Festival, 2018/2019. Participated as part of the Wind Ensemble.</p>
