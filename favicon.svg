@@ -1,4 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <rect width="32" height="32" fill="#fffff2"/>
-  <path d="M16 5 L4 27 M16 5 L28 27 M9.5 19 L22.5 19" stroke="#0b5aff" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+  <!-- Outer A silhouette + inner counter, evenodd cuts out the counter -->
+  <path fill-rule="evenodd" fill="#0b5aff" d="
+    M16 2.5
+    L30 28 L31.5 28 L31.5 29.5 L24 29.5 L24 28
+    L21 21
+    L11 21
+    L8 28 L8 29.5 L0.5 29.5 L0.5 28 L2 28
+    Z
+    M16 7.5 L21.5 19 L10.5 19 Z
+  "/>
 </svg>
