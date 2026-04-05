@@ -62,6 +62,20 @@
       text-decoration: none;
     }
 
+    /* ── GRAIN TEXTURE ────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9997;
+      opacity: 0.038;
+      background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='250' height='250'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/></filter><rect width='250' height='250' filter='url(%23n)'/></svg>");
+      background-repeat: repeat;
+    }
+
     /* ── CUSTOM CURSOR ─────────────────────────────────────── */
     #cursor {
       position: fixed;
@@ -97,7 +111,7 @@
       grid-column: 1;
       grid-row: 1;
       font-size: 22px;
-      font-weight: 400;
+      font-weight: 600;
       line-height: 1.2;
       letter-spacing: -0.3px;
       align-self: start;
@@ -134,6 +148,7 @@
 
     .bio p {
       font-size: 32px;
+      font-weight: 500;
       line-height: 1.2;
       letter-spacing: -0.5px;
     }
@@ -263,6 +278,18 @@
     .collage-item:nth-child(3n+1) { --ratio: 1 / 1.4;  }
     .collage-item:nth-child(3n+2) { --ratio: 1 / 1;    }
 
+    /* ── FADE-IN ANIMATION ─────────────────────────────────── */
+    [data-fade] {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    [data-fade].visible {
+      opacity: 1;
+      transform: none;
+    }
+
     /* ── RESPONSIVE ────────────────────────────────────────── */
     @media (max-width: 860px) {
       .page {
@@ -318,10 +345,10 @@
   <div class="page">
 
     <!-- TOP LEFT: name -->
-    <header class="name">Aditya Borkar</header>
+    <header class="name" data-fade>Aditya Borkar</header>
 
     <!-- TOP RIGHT: social links -->
-    <nav class="social">
+    <nav class="social" data-fade style="transition-delay: 0.08s">
       <a href="mailto:aditya.borkar1004@gmail.com" data-hover>Email</a>
       <a href="https://www.linkedin.com/in/aditya-borkar-3964a3290" target="_blank" rel="noopener" data-hover>LinkedIn</a>
       <a href="https://www.instagram.com/adiitya.b/" target="_blank" rel="noopener" data-hover>Instagram</a>
@@ -329,7 +356,7 @@
     </nav>
 
     <!-- BOTTOM LEFT: bio -->
-    <div class="bio">
+    <div class="bio" data-fade style="transition-delay: 0.18s">
       <p>
         Creative Director currently working
         in Singapore. Makes music, plays
@@ -343,7 +370,7 @@
     </div>
 
     <!-- BOTTOM RIGHT: project list -->
-    <main class="projects">
+    <main class="projects" data-fade style="transition-delay: 0.26s">
 
       <div class="project-row">
         <a href="current-works.html" data-hover>
@@ -423,7 +450,7 @@
        any .collage-item div. Images fill automatically.
        To add more slots: duplicate any <div class="collage-item"> block.
   ──────────────────────────────────────────────────────────── -->
-  <section class="collage-section">
+  <section class="collage-section" data-fade>
     <p class="collage-label">Work</p>
     <div class="collage-grid">
 
@@ -479,6 +506,18 @@
   </section>
 
   <script>
+    // ── Fade-in on scroll ─────────────────────────────────────
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(el => {
+        if (el.isIntersecting) {
+          el.target.classList.add('visible');
+          observer.unobserve(el.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('[data-fade]').forEach(el => observer.observe(el));
+
     // ── Custom cursor ──────────────────────────────────────────
     const cursor = document.getElementById('cursor');
 
