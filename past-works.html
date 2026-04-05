@@ -147,7 +147,7 @@
       font-size: 11px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      opacity: 0.4;
+      opacity: 0.4; /* overridden by pill styles below */
     }
 
     .card-title {
@@ -178,24 +178,29 @@
       opacity: 0.4;
     }
 
-    /* ── CATEGORY COLOUR CODING ────────────────────────────── */
-    [data-category="work"]        { border-left: 3px solid #0b5aff; }
-    [data-category="music"]       { border-left: 3px solid #b45309; }
-    [data-category="sport"]       { border-left: 3px solid #15803d; }
-    [data-category="community"]   { border-left: 3px solid #0e7490; }
-    [data-category="leadership"]  { border-left: 3px solid #7c3aed; }
-    [data-category="service"]     { border-left: 3px solid #be123c; }
-    [data-category="events"]      { border-left: 3px solid #c2410c; }
-    [data-category="competition"] { border-left: 3px solid #4338ca; }
+    /* ── CATEGORY PILL TAGS ────────────────────────────────── */
+    .card-tag {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 2px;
+      opacity: 1;
+    }
 
-    [data-category="work"]        .card-tag { color: #0b5aff; opacity: 1; }
-    [data-category="music"]       .card-tag { color: #b45309; opacity: 1; }
-    [data-category="sport"]       .card-tag { color: #15803d; opacity: 1; }
-    [data-category="community"]   .card-tag { color: #0e7490; opacity: 1; }
-    [data-category="leadership"]  .card-tag { color: #7c3aed; opacity: 1; }
-    [data-category="service"]     .card-tag { color: #be123c; opacity: 1; }
-    [data-category="events"]      .card-tag { color: #c2410c; opacity: 1; }
-    [data-category="competition"] .card-tag { color: #4338ca; opacity: 1; }
+    /* 3-group palette: Professional / Creative / Active */
+    [data-category="work"] .card-tag,
+    [data-category="service"] .card-tag,
+    [data-category="leadership"] .card-tag  { background: rgba(11, 90, 255, 0.1);  color: #0b5aff; }
+
+    [data-category="music"] .card-tag,
+    [data-category="events"] .card-tag,
+    [data-category="competition"] .card-tag { background: rgba(180, 83, 9, 0.1);   color: #92400e; }
+
+    [data-category="sport"] .card-tag,
+    [data-category="community"] .card-tag   { background: rgba(21, 128, 61, 0.1);  color: #15803d; }
 
     @media (max-width: 860px) {
       .nav { padding: 28px 20px 20px; flex-wrap: wrap; gap: 12px; }
