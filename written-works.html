@@ -57,7 +57,20 @@
 
     a { color: inherit; text-decoration: none; }
 
-    /* ── CUSTOM CURSOR ─────────────────────────────────────── */
+    /* ── SCROLL PROGRESS ───────────────────────────────────── */
+    #scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: var(--blue);
+      z-index: 10000;
+      opacity: 0.5;
+      transition: width 0.1s linear;
+      pointer-events: none;
+    }
+
+    /* ── CUSTOM CURSOR + TRAIL ────────────────────────────── */
     #cursor {
       position: fixed;
       width: 9px;
@@ -74,6 +87,17 @@
     #cursor.hovering {
       transform: translate(-50%, -50%) scale(2.2);
       opacity: 0.4;
+    }
+    .trail-dot {
+      position: fixed;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--blue);
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      will-change: transform, opacity;
     }
 
     /* ── NAV ───────────────────────────────────────────────── */
@@ -530,14 +554,48 @@
   </div>
 
   <script>
-    // ── Custom cursor ──────────────────────────────────────────
+    // ── Scroll progress ────────────────────────────────────────
+    const progressBar = document.createElement('div');
+    progressBar.id = 'scroll-progress';
+    document.body.prepend(progressBar);
+    window.addEventListener('scroll', () => {
+      const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+      progressBar.style.width = Math.min(pct, 100) + '%';
+    }, { passive: true });
+
+    // ── Cursor + trail ─────────────────────────────────────────
     const cursor = document.getElementById('cursor');
+    const TRAIL = 8;
+    const trailDots = [];
+    const trailPos = Array.from({ length: TRAIL }, () => ({ x: -200, y: -200 }));
+    for (let i = 0; i < TRAIL; i++) {
+      const d = document.createElement('div');
+      d.className = 'trail-dot';
+      document.body.appendChild(d);
+      trailDots.push(d);
+    }
+    let mx = -200, my = -200;
     document.addEventListener('mousemove', e => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top  = e.clientY + 'px';
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top  = my + 'px';
     });
     document.addEventListener('mouseleave', () => cursor.style.opacity = '0');
     document.addEventListener('mouseenter', () => cursor.style.opacity = '0.7');
+    (function loopTrail() {
+      let px = mx, py = my;
+      trailPos.forEach((pos, i) => {
+        const ease = 0.28 - i * 0.02;
+        pos.x += (px - pos.x) * ease;
+        pos.y += (py - pos.y) * ease;
+        trailDots[i].style.left    = pos.x + 'px';
+        trailDots[i].style.top     = pos.y + 'px';
+        trailDots[i].style.opacity = ((1 - i / TRAIL) * 0.28).toFixed(3);
+        trailDots[i].style.transform = `translate(-50%,-50%) scale(${(1 - i / TRAIL * 0.6).toFixed(2)})`;
+        px = pos.x; py = pos.y;
+      });
+      requestAnimationFrame(loopTrail);
+    })();
     document.querySelectorAll('[data-hover], a, button, li').forEach(el => {
       el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
       el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));

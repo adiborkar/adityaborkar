@@ -77,6 +77,18 @@
       opacity: 0.4;
     }
 
+    .trail-dot {
+      position: fixed;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--blue);
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      will-change: transform, opacity;
+    }
+
     /* ── NAV ───────────────────────────────────────────────── */
     .nav {
       display: flex;
@@ -247,14 +259,37 @@
 
   <script>
     const cursor = document.getElementById('cursor');
-
+    const TRAIL = 8;
+    const trailDots = [];
+    const trailPos = Array.from({ length: TRAIL }, () => ({ x: -200, y: -200 }));
+    for (let i = 0; i < TRAIL; i++) {
+      const d = document.createElement('div');
+      d.className = 'trail-dot';
+      document.body.appendChild(d);
+      trailDots.push(d);
+    }
+    let mx = -200, my = -200;
     document.addEventListener('mousemove', e => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top  = e.clientY + 'px';
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top  = my + 'px';
     });
-
-    document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
-    document.addEventListener('mouseenter', () => { cursor.style.opacity = '0.7'; });
+    document.addEventListener('mouseleave', () => cursor.style.opacity = '0');
+    document.addEventListener('mouseenter', () => cursor.style.opacity = '0.7');
+    (function loopTrail() {
+      let px = mx, py = my;
+      trailPos.forEach((pos, i) => {
+        const ease = 0.28 - i * 0.02;
+        pos.x += (px - pos.x) * ease;
+        pos.y += (py - pos.y) * ease;
+        trailDots[i].style.left    = pos.x + 'px';
+        trailDots[i].style.top     = pos.y + 'px';
+        trailDots[i].style.opacity = ((1 - i / TRAIL) * 0.28).toFixed(3);
+        trailDots[i].style.transform = `translate(-50%,-50%) scale(${(1 - i / TRAIL * 0.6).toFixed(2)})`;
+        px = pos.x; py = pos.y;
+      });
+      requestAnimationFrame(loopTrail);
+    })();
 
     document.querySelectorAll('[data-hover], a, button').forEach(el => {
       el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
