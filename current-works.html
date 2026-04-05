@@ -179,9 +179,17 @@
     }
 
     @media (max-width: 860px) {
-      .nav { padding: 32px 28px 28px; }
-      .page { padding: 40px 28px 60px; }
+      .nav { padding: 28px 20px 20px; flex-wrap: wrap; gap: 12px; }
+      .nav-links { gap: 16px; flex-wrap: wrap; }
+      .nav-links a { font-size: 15px; }
+      .page { padding: 36px 20px 60px; }
       .notebook-grid { grid-template-columns: 1fr; }
+      .card-title { font-size: 19px; }
+    }
+
+    @media (hover: none) {
+      * { cursor: auto !important; }
+      #cursor { display: none; }
     }
   </style>
 </head>

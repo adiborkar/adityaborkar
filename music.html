@@ -306,11 +306,19 @@
 
     /* ── RESPONSIVE ────────────────────────────────────────── */
     @media (max-width: 860px) {
-      .nav { padding: 32px 28px 0; }
-      .page { grid-template-columns: 1fr; padding: 40px 28px 80px; }
-      .index-col { padding-right: 0; position: static; margin-bottom: 48px; }
-      .player-col { padding-left: 0; border-left: none; border-top: 1px solid var(--rule); padding-top: 40px; }
-      .volume-slider { width: 70px; }
+      .nav { padding: 28px 20px 0; }
+      .page { grid-template-columns: 1fr; padding: 36px 20px 80px; }
+      .index-col { padding-right: 0; position: static; margin-bottom: 40px; }
+      .player-col { padding-left: 0; border-left: none; border-top: 1px solid var(--rule); padding-top: 36px; }
+      .controls { flex-wrap: wrap; gap: 16px; }
+      .speed-wrap { margin-left: 0; }
+      .volume-slider { width: 80px; }
+      .track-title { font-size: 22px; }
+    }
+
+    @media (hover: none) {
+      * { cursor: auto !important; }
+      #cursor { display: none; }
     }
   </style>
 </head>
