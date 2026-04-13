@@ -12,6 +12,24 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "3001"],
       "port": 3001
+    },
+    {
+      "name": "The Session",
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": ["/Users/adityaborkar/the-session/start-dev.sh"],
+      "port": 3000
+    },
+    {
+      "name": "Barterhaus",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4200", "--directory", "/Users/adityaborkar/barterhaus"],
+      "port": 4200
+    },
+    {
+      "name": "Tembusu Coffeehouse",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4201", "--directory", "/Users/adityaborkar/tembusu-coffeehouse"],
+      "port": 4201
     }
   ]
 }
