@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Performances — Aditya Borkar</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="theme-color" content="#fffff2" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0c0f1d" media="(prefers-color-scheme: dark)" />
+  <script>try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
   <link rel="preload" href="fonts/Zodiak-Variable.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="canonical" href="https://adityaborkar.art/performances.html" />
   <meta name="description" content="Live performances by saxophonist Aditya Borkar in Singapore: NUS Jazz Band, Tembusu Arts Week, Teeny Table and more." />
@@ -39,11 +42,11 @@
     :root {
       --blue: #0b5aff;
       --bg: #fffff2;
-      --rule: rgba(11, 90, 255, 0.22);
+      --rule: rgb(var(--blue-rgb) / 0.22);
     }
 
     ::selection {
-      background: rgba(11, 90, 255, 0.15);
+      background: rgb(var(--blue-rgb) / 0.15);
     }
 
     html, body {
@@ -150,7 +153,7 @@
     .section-link a { text-decoration: underline; text-underline-offset: 4px; transition: opacity 0.15s; }
     .section-link a:hover { opacity: 0.5; }
 
-    .local-video { display: block; width: 60%; height: auto; margin-top: 10px; background: rgba(11, 90, 255, 0.06); }
+    .local-video { display: block; width: 60%; height: auto; margin-top: 10px; background: rgb(var(--blue-rgb) / 0.06); }
 
     /* ── VIDEO EMBED ───────────────────────────────────────── */
     .video-wrap {
@@ -179,7 +182,7 @@
       break-inside: avoid;
       margin-bottom: 10px;
       overflow: hidden;
-      background: rgba(11, 90, 255, 0.06);
+      background: rgb(var(--blue-rgb) / 0.06);
       position: relative;
       cursor: pointer;
     }
@@ -240,7 +243,7 @@
       aspect-ratio: 9 / 18.5;
       margin-top: 14px;
       overflow: hidden;
-      background: rgba(11, 90, 255, 0.06);
+      background: rgb(var(--blue-rgb) / 0.06);
     }
 
     .reel-wrap iframe {
@@ -267,6 +270,7 @@
     }
 
   </style>
+  <link rel="stylesheet" href="theme.css" />
 </head>
 <body>
 

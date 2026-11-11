@@ -1,0 +1,170 @@
+/* ─────────────────────────────────────────────────────────────
+   Shared theme layer, loaded after each page's own styles.
+   1. Dark mode (follows the system, or the toggle button)
+   2. Readability: muted text stays legible
+   3. Phone layout fixes
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  --blue-rgb: 11 90 255;
+  --pink: #e05ca0;
+  --tag-blue-bg: rgb(11 90 255 / 0.1);   --tag-blue: #0b5aff;
+  --tag-amber-bg: rgb(180 83 9 / 0.1);   --tag-amber: #92400e;
+  --tag-green-bg: rgb(21 128 61 / 0.1);  --tag-green: #15803d;
+  color-scheme: light;
+}
+
+/* ── 1. DARK MODE ───────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --blue: #a3baff;
+    --blue-full: #a3baff;
+    --blue-rgb: 163 186 255;
+    --bg: #0c0f1d;
+    --rule: rgb(163 186 255 / 0.2);
+    --dim: rgb(163 186 255 / 0.16);
+    --pink: #ff8fc8;
+    --tag-blue-bg: rgb(163 186 255 / 0.13);  --tag-blue: #b9caff;
+    --tag-amber-bg: rgb(251 191 36 / 0.13);  --tag-amber: #fcd679;
+    --tag-green-bg: rgb(74 222 128 / 0.13);  --tag-green: #8be9ad;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --blue: #a3baff;
+  --blue-full: #a3baff;
+  --blue-rgb: 163 186 255;
+  --bg: #0c0f1d;
+  --rule: rgb(163 186 255 / 0.2);
+  --dim: rgb(163 186 255 / 0.16);
+  --pink: #ff8fc8;
+  --tag-blue-bg: rgb(163 186 255 / 0.13);  --tag-blue: #b9caff;
+  --tag-amber-bg: rgb(251 191 36 / 0.13);  --tag-amber: #fcd679;
+  --tag-green-bg: rgb(74 222 128 / 0.13);  --tag-green: #8be9ad;
+  color-scheme: dark;
+}
+
+html { background: var(--bg); }
+::selection { background: rgb(var(--blue-rgb) / 0.22); }
+
+/* Music page speed menu arrow follows the text colour */
+.speed-select {
+  background-image: none !important;
+  background:
+    linear-gradient(45deg, transparent 50%, currentColor 50%) right 13px center / 5px 5px no-repeat,
+    linear-gradient(-45deg, transparent 50%, currentColor 50%) right 8px center / 5px 5px no-repeat !important;
+}
+.speed-select option { background: var(--bg); color: var(--blue); }
+
+/* Smooth colour change when the toggle is pressed (not on page load) */
+html.theme-anim,
+html.theme-anim *,
+html.theme-anim *::before,
+html.theme-anim *::after {
+  transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, fill 0.35s ease !important;
+}
+
+/* ── Theme toggle button (added by site.js) ─────────────────── */
+.theme-toggle {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9990;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  color: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.15s, transform 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.theme-toggle:hover { opacity: 1; }
+.theme-toggle:active { transform: scale(0.92); }
+.theme-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.theme-toggle svg { width: 18px; height: 18px; display: block; transition: transform 0.45s ease; }
+:root[data-theme="dark"] .theme-toggle svg { transform: rotate(180deg); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle svg { transform: rotate(180deg); }
+}
+
+/* ── 2. READABILITY ────────────────────────────────────────── */
+/* Small secondary text was set at 40–55% opacity, too faint to read. */
+.index-meta, .episode-meta, .proj-year, .track-meta, .credits-label, .credit-role,
+.collage-label, .index-label, .page-title, .page-sub, .section-subheading,
+.nav-label, .time, .sg-clock, .notebook-card:not([data-category]) .card-tag {
+  opacity: 0.72 !important;
+}
+.card-body { opacity: 0.85; }
+.empty-state { opacity: 0.55 !important; }
+
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* ── 3. PHONE LAYOUT ───────────────────────────────────────── */
+@media (max-width: 860px) {
+  body { -webkit-tap-highlight-color: rgb(var(--blue-rgb) / 0.12); }
+
+  /* Current Works / Past Works header: one tidy row that scrolls sideways */
+  .nav:has(.nav-links) {
+    display: block;
+    padding: 24px 20px 0;
+  }
+  .nav:has(.nav-links) .nav-name { display: inline-block; margin-bottom: 12px; }
+  .nav-links {
+    flex-wrap: nowrap !important;
+    gap: 22px !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 -20px;
+    padding: 4px 20px 16px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 28px), transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 28px), transparent 100%);
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a { font-size: 16px !important; white-space: nowrap; flex-shrink: 0; }
+  .nav-links a[aria-current="page"] { text-decoration: underline; text-underline-offset: 5px; }
+
+  /* Cards: less padding so text gets the width */
+  .notebook-card { padding: 20px 18px 22px; min-height: 0; }
+  .card-title { font-size: 20px; }
+  .card-body { font-size: 15.5px; line-height: 1.55; }
+  .page { padding-top: 28px; }
+  .page-header { margin-bottom: 20px; }
+
+  /* Homepage: bigger tap targets in the project list */
+  .project-row { padding: 13px 0; }
+  .project-row a { font-size: 17px !important; }
+  .social a { display: inline-block; margin-right: 20px; line-height: 2 !important; }
+
+  /* Music and Written Works lists: comfortable rows */
+  .index-item { padding: 14px 0; }
+  .index-meta { font-size: 13.5px; }
+
+  /* Essays: a calmer reading measure */
+  .work-body { font-size: 17px !important; line-height: 1.7 !important; }
+  .work-title { font-size: 24px; line-height: 1.2; }
+
+  /* Music player controls: large enough for a thumb */
+  .ctrl-btn { min-width: 44px; min-height: 44px; justify-content: center; }
+  .btn-play svg { width: 44px; height: 44px; }
+  .progress-bar { height: 4px; }
+  .progress-bar::before { content: ''; position: absolute; inset: -14px 0; }
+
+  /* Toggle sits clear of the screen edge and the home bar */
+  .theme-toggle {
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(14px, env(safe-area-inset-bottom));
+    width: 38px; height: 38px;
+  }
+}

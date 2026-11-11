@@ -5,11 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Current Works — Aditya Borkar</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="theme-color" content="#fffff2" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0c0f1d" media="(prefers-color-scheme: dark)" />
+  <script>try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
   <link rel="preload" href="fonts/Zodiak-Variable.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="canonical" href="https://adityaborkar.art/current-works.html" />
-  <meta name="description" content="What Aditya Borkar is working on now: original music and The Session, a music teaching agency." />
+  <meta name="description" content="What Aditya Borkar is working on now, including an EP of original music." />
   <meta property="og:title" content="Current Works — Aditya Borkar" />
-  <meta property="og:description" content="What Aditya Borkar is working on now: original music and The Session, a music teaching agency." />
+  <meta property="og:description" content="What Aditya Borkar is working on now, including an EP of original music." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://adityaborkar.art/current-works.html" />
   <meta name="twitter:card" content="summary" />
@@ -39,10 +42,10 @@
     :root {
       --blue: #0b5aff;
       --bg: #fffff2;
-      --rule: rgba(11, 90, 255, 0.22);
+      --rule: rgb(var(--blue-rgb) / 0.22);
     }
 
-    ::selection { background: rgba(11, 90, 255, 0.15); }
+    ::selection { background: rgb(var(--blue-rgb) / 0.15); }
 
     html, body {
       width: 100%;
@@ -148,7 +151,7 @@
     }
 
     .notebook-card:hover {
-      background: rgba(11, 90, 255, 0.03);
+      background: rgb(var(--blue-rgb) / 0.03);
     }
 
     .card-tag {
@@ -196,6 +199,7 @@
     }
 
   </style>
+  <link rel="stylesheet" href="theme.css" />
 </head>
 <body>
 
@@ -205,10 +209,12 @@
   <nav class="nav">
     <a class="nav-name" href="index.html" data-hover>Aditya Borkar</a>
     <div class="nav-links">
+      <a href="documentaries.html" data-hover>Documentaries</a>
       <a href="performances.html" data-hover>Performances</a>
       <a href="music.html" data-hover>Music</a>
       <a href="written-works.html" data-hover>Written Works</a>
-      <a href="current-works.html" data-hover>Current Works</a>
+      <a href="current-works.html" data-hover aria-current="page">Current Works</a>
+      <a href="past-works.html" data-hover>Past Works</a>
     </div>
   </nav>
 
@@ -230,12 +236,6 @@
         <span class="card-tag">Music</span>
         <p class="card-title">Untitled EP</p>
         <p class="card-body">A collection of original compositions combining elements from jazz, R&amp;B, and funk.</p>
-      </div>
-
-      <div class="notebook-card">
-        <span class="card-tag">Music</span>
-        <p class="card-title">The Session</p>
-        <p class="card-body">A music teaching agency built around creativity and passion, not exams. Our goal is to connect students with educators who can teach them to play and perform.</p>
       </div>
 
     </div>

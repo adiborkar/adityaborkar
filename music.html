@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Music — Aditya Borkar</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="theme-color" content="#fffff2" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0c0f1d" media="(prefers-color-scheme: dark)" />
+  <script>try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
   <link rel="preload" href="fonts/Zodiak-Variable.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="canonical" href="https://adityaborkar.art/music.html" />
   <meta name="description" content="Recordings featuring saxophonist Aditya Borkar: original compositions, jazz trio, big band and collective work." />
@@ -35,11 +38,11 @@
     :root {
       --blue: #0b5aff;
       --bg: #fffff2;
-      --rule: rgba(11, 90, 255, 0.22);
-      --dim: rgba(11, 90, 255, 0.10);
+      --rule: rgb(var(--blue-rgb) / 0.22);
+      --dim: rgb(var(--blue-rgb) / 0.10);
     }
 
-    ::selection { background: rgba(11, 90, 255, 0.15); }
+    ::selection { background: rgb(var(--blue-rgb) / 0.15); }
     html, body { width: 100%; min-height: 100%; }
 
     body {
@@ -325,6 +328,7 @@
     }
 
   </style>
+  <link rel="stylesheet" href="theme.css" />
 </head>
 <body>
 
