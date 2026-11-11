@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Music — Aditya Borkar</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preload" href="fonts/Zodiak-Variable.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="canonical" href="https://adityaborkar.art/music.html" />
+  <meta name="description" content="Recordings featuring saxophonist Aditya Borkar: original compositions, jazz trio, big band and collective work." />
+  <meta property="og:title" content="Music — Aditya Borkar" />
+  <meta property="og:description" content="Recordings featuring saxophonist Aditya Borkar: original compositions, jazz trio, big band and collective work." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://adityaborkar.art/music.html" />
+  <meta name="twitter:card" content="summary" />
   <style>
     @font-face {
       font-family: 'Zodiak';
@@ -43,10 +51,10 @@
       line-height: 1.25;
       letter-spacing: -0.03em;
       -webkit-font-smoothing: antialiased;
-      cursor: none;
     }
 
-    * { cursor: none !important; }
+    html.custom-cursor, html.custom-cursor * { cursor: none !important; }
+    html:not(.custom-cursor) #cursor { display: none; }
 
     a { color: inherit; text-decoration: none; }
 
@@ -97,7 +105,7 @@
     .index-item {
       border-top: 1px solid var(--rule);
       padding: 10px 0;
-      cursor: none;
+      cursor: pointer;
       transition: opacity 0.15s;
     }
     .index-item:last-child { border-bottom: 1px solid var(--rule); }
@@ -161,7 +169,7 @@
       background: var(--dim);
       border-radius: 2px;
       position: relative;
-      cursor: none;
+      cursor: pointer;
     }
     .progress-fill {
       height: 100%;
@@ -191,7 +199,7 @@
       background: none;
       border: none;
       color: var(--blue);
-      cursor: none;
+      cursor: pointer;
       padding: 0;
       display: flex;
       align-items: center;
@@ -219,7 +227,7 @@
       height: 2px;
       background: var(--dim);
       border-radius: 2px;
-      cursor: none;
+      cursor: pointer;
       outline: none;
     }
     .volume-slider::-webkit-slider-thumb {
@@ -228,7 +236,7 @@
       width: 12px; height: 12px;
       border-radius: 50%;
       background: var(--blue);
-      cursor: none;
+      cursor: pointer;
       transition: transform 0.1s;
     }
     .volume-slider:hover::-webkit-slider-thumb { transform: scale(1.3); }
@@ -237,7 +245,7 @@
       border-radius: 50%;
       background: var(--blue);
       border: none;
-      cursor: none;
+      cursor: pointer;
     }
 
     /* speed dropdown */
@@ -262,7 +270,7 @@
       font-size: 13px;
       letter-spacing: -0.2px;
       padding: 4px 28px 4px 10px;
-      cursor: none;
+      cursor: pointer;
       outline: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%230b5aff' opacity='0.5'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
@@ -316,10 +324,6 @@
       .track-title { font-size: 22px; }
     }
 
-    @media (hover: none) {
-      * { cursor: auto !important; }
-      #cursor { display: none; }
-    }
   </style>
 </head>
 <body>
@@ -449,18 +453,13 @@
     <!-- RIGHT: player (panels injected by JS) -->
     <main class="player-col" id="player-col">
       <p class="empty-state" id="empty-state">Select a track to listen.</p>
-      <audio id="audio"></audio>
+      <audio id="audio" preload="metadata"></audio>
     </main>
   </div>
 
   <script>
     // ── Cursor + trail ─────────────────────────────────────────
-    const cursor = document.getElementById('cursor');
-    function addHover(el) {
-      el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
-    }
-    document.querySelectorAll('[data-hover], a').forEach(addHover);
+    // (cursor is handled by site.js)
 
     // ── Helpers ────────────────────────────────────────────────
     function fmt(s) {
@@ -507,16 +506,16 @@
             </div>
 
             <div class="controls">
-              <button class="ctrl-btn btn-back" title="−10 seconds">
+              <button class="ctrl-btn btn-back" title="−10 seconds" aria-label="−10 seconds">
                 ${svg('M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z')}
               </button>
 
-              <button class="ctrl-btn btn-play" title="Play / Pause">
+              <button class="ctrl-btn btn-play" title="Play / Pause" aria-label="Play / Pause">
                 ${svg('M8 5v14l11-7z', 'class="icon-play"')}
                 ${svg('M6 19h4V5H6v14zm8-14v14h4V5h-4z', 'class="icon-pause" style="display:none"')}
               </button>
 
-              <button class="ctrl-btn btn-fwd" title="+10 seconds">
+              <button class="ctrl-btn btn-fwd" title="+10 seconds" aria-label="+10 seconds">
                 ${svg('M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z')}
               </button>
 
@@ -524,12 +523,12 @@
                 <span class="volume-icon">
                   ${svg('M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z')}
                 </span>
-                <input class="volume-slider" type="range" min="0" max="1" step="0.01" value="1" title="Volume" />
+                <input class="volume-slider" type="range" min="0" max="1" step="0.01" value="1" title="Volume" aria-label="Volume" />
               </div>
 
               <div class="speed-wrap">
                 <span class="speed-label">Speed</span>
-                <select class="speed-select" title="Playback speed">
+                <select class="speed-select" title="Playback speed" aria-label="Playback speed">
                   ${speedOptions}
                 </select>
               </div>
@@ -578,8 +577,6 @@
       const volSlider = panel.querySelector('.volume-slider');
       const speedSel  = panel.querySelector('.speed-select');
 
-      // add cursor hover to controls
-      [playBtn, backBtn, fwdBtn, bar, volSlider, speedSel, panel.querySelector('.volume-wrap')].filter(Boolean).forEach(addHover);
 
       playBtn.addEventListener('click', () => audio.paused ? audio.play() : audio.pause());
       backBtn.addEventListener('click', () => { audio.currentTime = Math.max(0, audio.currentTime - 10); });
@@ -631,6 +628,11 @@
         audio.playbackRate = 1;
         audio.load();
         audio.play().catch(() => {});
+
+        // On mobile the player sits below the list: bring it into view
+        if (window.innerWidth <= 860) {
+          panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       });
     });
 
@@ -642,5 +644,6 @@
     });
   </script>
 
+  <script src="site.js" defer></script>
 </body>
 </html>

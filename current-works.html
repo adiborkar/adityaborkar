@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Current Works — Aditya Borkar</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preload" href="fonts/Zodiak-Variable.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="canonical" href="https://adityaborkar.art/current-works.html" />
+  <meta name="description" content="What Aditya Borkar is working on now: original music and The Session, a music teaching agency." />
+  <meta property="og:title" content="Current Works — Aditya Borkar" />
+  <meta property="og:description" content="What Aditya Borkar is working on now: original music and The Session, a music teaching agency." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://adityaborkar.art/current-works.html" />
+  <meta name="twitter:card" content="summary" />
   <style>
     @font-face {
       font-family: 'Zodiak';
@@ -50,10 +58,10 @@
       line-height: 1.25;
       letter-spacing: -0.03em;
       -webkit-font-smoothing: antialiased;
-      cursor: none;
     }
 
-    * { cursor: none !important; }
+    html.custom-cursor, html.custom-cursor * { cursor: none !important; }
+    html:not(.custom-cursor) #cursor { display: none; }
 
     a { color: inherit; text-decoration: none; }
 
@@ -187,10 +195,6 @@
       .card-title { font-size: 19px; }
     }
 
-    @media (hover: none) {
-      * { cursor: auto !important; }
-      #cursor { display: none; }
-    }
   </style>
 </head>
 <body>
@@ -234,32 +238,9 @@
         <p class="card-body">A music teaching agency built around creativity and passion, not exams. Our goal is to connect students with educators who can teach them to play and perform.</p>
       </div>
 
-      <div class="notebook-card empty"></div>
-
-      <div class="notebook-card empty"></div>
-
-      <div class="notebook-card empty"></div>
-
-      <div class="notebook-card empty"></div>
-
     </div>
   </div>
 
-  <script>
-    const cursor = document.getElementById('cursor');
-    document.addEventListener('mousemove', e => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top  = e.clientY + 'px';
-    });
-    document.addEventListener('mouseleave', () => cursor.style.opacity = '0');
-    document.addEventListener('mouseenter', () => cursor.style.opacity = '0.7');
-
-
-    document.querySelectorAll('[data-hover], a, button').forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
-    });
-  </script>
-
+  <script src="site.js" defer></script>
 </body>
 </html>
