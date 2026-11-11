@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentaries — Aditya Borkar</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://i.ytimg.com" />
+  <link rel="preload" href="fonts/Zodiak-Variable.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="canonical" href="https://adityaborkar.art/documentaries.html" />
+  <meta name="description" content="Episodes of CNA&#x27;s Insight that Aditya Borkar worked on as Assistant Producer." />
+  <meta property="og:title" content="Documentaries — Aditya Borkar" />
+  <meta property="og:description" content="Episodes of CNA&#x27;s Insight that Aditya Borkar worked on as Assistant Producer." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://adityaborkar.art/documentaries.html" />
+  <meta name="twitter:card" content="summary" />
+  <style>
+    @font-face {
+      font-family: 'Zodiak';
+      src: url('fonts/Zodiak-Variable.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Zodiak';
+      src: url('fonts/Zodiak-VariableItalic.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: italic;
+      font-display: swap;
+    }
+  </style>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --blue: #0b5aff;
+      --bg: #fffff2;
+      --rule: rgba(11, 90, 255, 0.22);
+    }
+
+    ::selection {
+      background: rgba(11, 90, 255, 0.15);
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--blue);
+      font-family: 'Zodiak', Georgia, serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    html.custom-cursor, html.custom-cursor * { cursor: none !important; }
+    html:not(.custom-cursor) #cursor { display: none; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ── CUSTOM CURSOR ─────────────────────────────────────── */
+    #cursor {
+      position: fixed;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--blue);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s ease, opacity 0.15s ease;
+      will-change: transform;
+    }
+
+    #cursor.hovering {
+      transform: translate(-50%, -50%) scale(2.2);
+      opacity: 0.4;
+    }
+
+    /* ── NAV ───────────────────────────────────────────────── */
+    .nav {
+      padding: 44px 52px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .nav-name {
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.3px;
+      transition: opacity 0.15s;
+    }
+
+    .nav-name:hover {
+      opacity: 0.5;
+    }
+
+    .nav-back {
+      font-size: 18px;
+      letter-spacing: -0.3px;
+      transition: opacity 0.15s;
+    }
+
+    .nav-back:hover {
+      opacity: 0.5;
+    }
+
+    /* ── PAGE CONTENT ──────────────────────────────────────── */
+    .content {
+      padding: 80px 52px 100px;
+    }
+
+    /* ── SECTION ───────────────────────────────────────────── */
+    .section {
+      margin-bottom: 80px;
+    }
+
+    .section-heading {
+      font-size: 32px;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 8px;
+    }
+
+    .section-subheading {
+      font-size: 16px;
+      opacity: 0.55;
+      margin-bottom: 24px;
+      letter-spacing: -0.3px;
+    }
+
+    .page-intro {
+      font-size: 32px;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      max-width: 22em;
+      margin-bottom: 10px;
+    }
+
+    .page-sub {
+      font-size: 16px;
+      opacity: 0.55;
+      letter-spacing: -0.3px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 36px;
+    }
+
+    /* ── EPISODE GRID ──────────────────────────────────────── */
+    .episode-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 36px 20px;
+      list-style: none;
+    }
+
+    .episode a { display: block; }
+
+    .episode-thumb {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: rgba(11, 90, 255, 0.06);
+    }
+
+    .episode-thumb img,
+    .episode-thumb iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.2s ease;
+    }
+
+    .episode a:hover .episode-thumb img { opacity: 0.88; }
+
+    .episode-play {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .episode-play svg { width: 14px; height: 14px; fill: var(--blue); margin-left: 2px; }
+
+    .episode-title {
+      font-size: 18px;
+      letter-spacing: -0.4px;
+      line-height: 1.25;
+      margin-top: 12px;
+    }
+
+    .episode a:hover .episode-title { opacity: 0.55; }
+
+    .episode-meta {
+      font-size: 13px;
+      opacity: 0.55;
+      margin-top: 4px;
+    }
+
+    /* ── RESPONSIVE ────────────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .episode-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 860px) {
+      .nav { padding: 28px 20px 0; }
+      .content { padding: 36px 20px 60px; }
+      .page-intro { font-size: 22px; }
+    }
+
+    @media (max-width: 560px) {
+      .episode-grid { grid-template-columns: 1fr; gap: 28px; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html" class="nav-name" data-hover>Aditya Borkar</a>
+    <a href="index.html" class="nav-back" data-hover>← Back</a>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <h1 class="page-intro">Documentaries</h1>
+    <p class="page-sub">Assistant Producer at CNA. Episodes of Insight I worked on.</p>
+
+    <!-- To add an episode: copy one <li>, then change the YouTube video ID
+         (in href, data-video and both image URLs) and the title. -->
+    <ul class="episode-grid">
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=vIi9X-IL2jI" target="_blank" rel="noopener" data-video="vIi9X-IL2jI" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/vIi9X-IL2jI/hq720.jpg" alt="" width="1280" height="720" decoding="async" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/vIi9X-IL2jI/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">Inside Laos&#x27; Illicit Child Sex Tourism Trade</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=PJTFxjST_3M" target="_blank" rel="noopener" data-video="PJTFxjST_3M" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/PJTFxjST_3M/hq720.jpg" alt="" width="1280" height="720" decoding="async" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/PJTFxjST_3M/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">Malaysia Is Ageing As Quickly As Japan. Is It Ready For Old Age?</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=qssAQq8T5Ws" target="_blank" rel="noopener" data-video="qssAQq8T5Ws" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/qssAQq8T5Ws/hq720.jpg" alt="" width="1280" height="720" decoding="async" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/qssAQq8T5Ws/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">Before The Haze, Indonesia Was Already Losing Its Forests</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=cTITKmwt5pI" target="_blank" rel="noopener" data-video="cTITKmwt5pI" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/cTITKmwt5pI/hq720.jpg" alt="" width="1280" height="720" decoding="async" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/cTITKmwt5pI/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">What Should Malaysia Do with Over 120,000 Rohingya Refugees?</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=kwJpcvy55F4" target="_blank" rel="noopener" data-video="kwJpcvy55F4" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/kwJpcvy55F4/hq720.jpg" alt="" width="1280" height="720" decoding="async" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/kwJpcvy55F4/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">South Korea Was Running Out Of Babies. Now Births Are Rising. Why?</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=tY2e-hYK2cI" target="_blank" rel="noopener" data-video="tY2e-hYK2cI" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/tY2e-hYK2cI/hq720.jpg" alt="" width="1280" height="720" decoding="async" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/tY2e-hYK2cI/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">China Wants To Recruit The World&#x27;s Top Talent. Can It Convince Them To Move?</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=iWmgkvZsJAg" target="_blank" rel="noopener" data-video="iWmgkvZsJAg" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/iWmgkvZsJAg/hq720.jpg" alt="" width="1280" height="720" decoding="async" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/iWmgkvZsJAg/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">Is The Dream Of Working Abroad Fading For Indians?</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=XE03Yp-RlCU" target="_blank" rel="noopener" data-video="XE03Yp-RlCU" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/XE03Yp-RlCU/hq720.jpg" alt="" width="1280" height="720" decoding="async" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/XE03Yp-RlCU/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">China Wants More Marriages. But Young Men And Women Want Different Things</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=3jzotGvY9-g" target="_blank" rel="noopener" data-video="3jzotGvY9-g" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/3jzotGvY9-g/hq720.jpg" alt="" width="1280" height="720" decoding="async" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/3jzotGvY9-g/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">A &#x27;Super&#x27; El Nino Is Coming For Southeast Asia. What Happens Next?</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=fg0erAJnv7M" target="_blank" rel="noopener" data-video="fg0erAJnv7M" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/fg0erAJnv7M/hq720.jpg" alt="" width="1280" height="720" decoding="async" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/fg0erAJnv7M/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">Why China Is Spending Billions Moving West</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=NSGmZfwZeGA" target="_blank" rel="noopener" data-video="NSGmZfwZeGA" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/NSGmZfwZeGA/hq720.jpg" alt="" width="1280" height="720" decoding="async" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/NSGmZfwZeGA/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">How &#x27;Hustle Culture&#x27; Became The New Norm For Young Filipinos</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=QXYVr0y2Hlk" target="_blank" rel="noopener" data-video="QXYVr0y2Hlk" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/QXYVr0y2Hlk/hq720.jpg" alt="" width="1280" height="720" decoding="async" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/QXYVr0y2Hlk/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">Is Malaysia&#x27;s Unity Government Starting to Crack?</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=fJzTP0e-zL4" target="_blank" rel="noopener" data-video="fJzTP0e-zL4" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/fJzTP0e-zL4/hq720.jpg" alt="" width="1280" height="720" decoding="async" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/fJzTP0e-zL4/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">&quot;When You Wake Up, You&#x27;ll Be Beautiful&quot;: The Dark Side Of Thai Beauty</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=_TiffbWIUJY" target="_blank" rel="noopener" data-video="_TiffbWIUJY" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/_TiffbWIUJY/hq720.jpg" alt="" width="1280" height="720" decoding="async" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/_TiffbWIUJY/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">Why Some Call The Philippines The &quot;Bullying Capital Of The World&quot;</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+      <li class="episode">
+        <a href="https://www.youtube.com/watch?v=6FHxKdzAkWs" target="_blank" rel="noopener" data-video="6FHxKdzAkWs" data-hover>
+          <div class="episode-thumb">
+            <img src="https://i.ytimg.com/vi/6FHxKdzAkWs/hq720.jpg" alt="" width="1280" height="720" decoding="async" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/6FHxKdzAkWs/mqdefault.jpg'" />
+            <span class="episode-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <p class="episode-title">Japan Imports 60% Of Its Food: Why A Weak Yen Is Triggering A Crisis</p>
+          <p class="episode-meta">Insight · CNA</p>
+        </a>
+      </li>
+    </ul>
+
+  </main>
+
+  <script>
+    // Play in place: swap the thumbnail for the YouTube player on click.
+    // Without JS (or with cmd/ctrl-click) the link simply opens YouTube.
+    document.querySelectorAll('.episode a[data-video]').forEach(link => {
+      link.addEventListener('click', e => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+        const thumb = link.querySelector('.episode-thumb');
+        if (!thumb || thumb.querySelector('iframe')) return;
+        e.preventDefault();
+        const frame = document.createElement('iframe');
+        frame.src = 'https://www.youtube-nocookie.com/embed/' + link.dataset.video + '?autoplay=1&rel=0';
+        frame.title = link.querySelector('.episode-title').textContent;
+        frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        frame.referrerPolicy = 'strict-origin-when-cross-origin';
+        frame.allowFullscreen = true;
+        thumb.replaceChildren(frame);
+      });
+    });
+  </script>
+  <script src="site.js" defer></script>
+</body>
+</html>
