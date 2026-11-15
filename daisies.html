@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guitar Daisies — Aditya Borkar</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="theme-color" content="#fffff2" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0c0f1d" media="(prefers-color-scheme: dark)" />
+  <script>try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="preload" href="fonts/Zodiak-Variable.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="canonical" href="https://adityaborkar.art/daisies.html" />
+  <meta name="description" content="Guitar Daisies: play guitar into your camera and microphone and a garden of hand-drawn daisies grows from the sound." />
+  <meta property="og:title" content="Guitar Daisies — Aditya Borkar" />
+  <meta property="og:description" content="Play guitar into your camera and microphone and a garden of hand-drawn daisies grows from the sound." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://adityaborkar.art/daisies.html" />
+  <meta name="twitter:card" content="summary" />
+  <style>
+    @font-face {
+      font-family: 'Zodiak';
+      src: url('fonts/Zodiak-Variable.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Zodiak';
+      src: url('fonts/Zodiak-VariableItalic.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: italic;
+      font-display: swap;
+    }
+  </style>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0b5aff;
+      --bg: #fffff2;
+      --rule: rgb(var(--blue-rgb) / 0.22);
+    }
+
+    ::selection { background: rgb(var(--blue-rgb) / 0.15); }
+
+    html, body { width: 100%; min-height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--blue);
+      font-family: 'Zodiak', Georgia, serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    html.custom-cursor, html.custom-cursor * { cursor: none !important; }
+    html:not(.custom-cursor) #cursor { display: none; }
+
+    a { color: inherit; text-decoration: none; }
+
+    #cursor {
+      position: fixed;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--blue);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s ease, opacity 0.15s ease;
+      will-change: transform;
+    }
+    #cursor.hovering { transform: translate(-50%, -50%) scale(2.2); opacity: 0.4; }
+
+    /* ── NAV ───────────────────────────────────────────────── */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 44px 52px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .nav-name { font-size: 22px; font-weight: 400; letter-spacing: -0.3px; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { font-size: 18px; letter-spacing: -0.3px; transition: opacity 0.15s; }
+    .nav-links a:hover { opacity: 0.5; }
+
+    /* ── PAGE ──────────────────────────────────────────────── */
+    .page { padding: 52px 52px 80px; max-width: 1240px; }
+    .page-header { margin-bottom: 28px; }
+    .page-title { font-size: 14px; opacity: 0.5; }
+    .piece-title { font-size: 34px; font-weight: 500; letter-spacing: -0.8px; margin-top: 10px; }
+    .piece-intro { font-size: 17px; line-height: 1.5; max-width: 620px; margin-top: 12px; opacity: 0.85; }
+
+    /* ── STAGE ─────────────────────────────────────────────── */
+    .stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 1px solid var(--rule);
+      background: #0c0f1d;
+      overflow: hidden;
+    }
+    .stage canvas { display: block; width: 100%; height: 100%; object-fit: contain; }
+    .stage:fullscreen { border: 0; background: #000; aspect-ratio: auto; }
+    .stage:-webkit-full-screen { border: 0; background: #000; aspect-ratio: auto; }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 24px;
+      text-align: center;
+      background: var(--bg);
+      color: var(--blue);
+    }
+    .overlay[hidden] { display: none; }
+    .overlay img { width: 96px; height: 96px; }
+    .overlay p { font-size: 15px; line-height: 1.5; max-width: 440px; opacity: 0.85; }
+    .overlay .err { color: var(--pink); opacity: 1; }
+
+    .btn {
+      font: inherit;
+      font-size: 15px;
+      letter-spacing: -0.2px;
+      color: var(--blue);
+      background: transparent;
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn:hover { background: rgb(var(--blue-rgb) / 0.07); }
+    .btn.primary { font-size: 18px; padding: 11px 26px; border-color: var(--blue); }
+    .btn[aria-pressed="true"] { background: rgb(var(--blue-rgb) / 0.14); }
+    .btn kbd { font: inherit; font-size: 12px; opacity: 0.6; margin-left: 6px; }
+
+    /* ── CONTROLS ──────────────────────────────────────────── */
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
+    .controls[hidden] { display: none; }
+    .status { font-size: 14px; opacity: 0.72; margin-left: auto; }
+
+    .settings {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px 28px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--rule);
+    }
+    .settings[hidden] { display: none; }
+    .field { display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+    .field > span { opacity: 0.72; }
+    .field select {
+      font: inherit;
+      font-size: 15px;
+      color: var(--blue);
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 7px 8px;
+      width: 100%;
+    }
+    .field input[type="range"] { width: 100%; accent-color: var(--blue); }
+
+    .meter { position: relative; height: 10px; border: 1px solid var(--rule); border-radius: 999px; overflow: hidden; }
+    .meter i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--blue); opacity: 0.75; }
+    .meter b { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--pink); left: 12%; }
+    .hint { font-size: 13px; line-height: 1.45; opacity: 0.72; }
+
+    .notes { margin-top: 36px; max-width: 620px; font-size: 15px; line-height: 1.55; opacity: 0.85; }
+    .notes p + p { margin-top: 10px; }
+
+    @media (max-width: 860px) {
+      .nav { padding: 28px 20px 20px; flex-wrap: wrap; gap: 12px; }
+      .nav-links { gap: 16px; flex-wrap: wrap; }
+      .nav-links a { font-size: 15px; }
+      .page { padding: 36px 20px 60px; }
+      .piece-title { font-size: 27px; }
+      .settings { grid-template-columns: 1fr; }
+      .status { margin-left: 0; width: 100%; }
+      .overlay { gap: 9px; padding: 10px 14px; }
+      .overlay img { width: 40px; height: 40px; }
+      .overlay p { font-size: 12.5px; line-height: 1.35; }
+      .btn.primary { font-size: 16px; padding: 7px 20px; }
+    }
+  </style>
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+
+  <div id="cursor"></div>
+
+  <nav class="nav">
+    <a class="nav-name" href="index.html" data-hover>Aditya Borkar</a>
+    <div class="nav-links">
+      <a href="documentaries.html" data-hover>Documentaries</a>
+      <a href="performances.html" data-hover>Performances</a>
+      <a href="music.html" data-hover>Music</a>
+      <a href="written-works.html" data-hover>Written Works</a>
+      <a href="current-works.html" data-hover>Current Works</a>
+      <a href="past-works.html" data-hover>Past Works</a>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <div class="page-header">
+      <p class="page-title"><a href="current-works.html" data-hover>Current Works</a> / Interactive</p>
+      <h1 class="piece-title">Guitar Daisies</h1>
+      <p class="piece-intro">Play a guitar in front of your camera. Every pluck throws daisies out of the sound hole and off your fretting fingers, and they fall and take root along the bottom of the frame.</p>
+    </div>
+
+    <div class="stage" id="stage">
+      <canvas id="view" width="1280" height="720" aria-label="Live camera with daisies growing from the sound"></canvas>
+      <div class="overlay" id="overlay">
+        <img src="images/daisies/flower_01.png" alt="" />
+        <button class="btn primary" id="start" type="button" data-hover>Start</button>
+        <p id="overlayMsg">Your browser will ask for the camera and microphone. Nothing is recorded or sent anywhere. It all runs on this page.</p>
+      </div>
+    </div>
+
+    <div class="controls" id="controls" hidden>
+      <button class="btn" id="clear" type="button" data-hover>Clear garden<kbd>C</kbd></button>
+      <button class="btn" id="full" type="button" data-hover>Full screen<kbd>F</kbd></button>
+      <button class="btn" id="settingsBtn" type="button" aria-pressed="false" data-hover>Settings</button>
+      <button class="btn" id="stop" type="button" data-hover>Stop</button>
+      <span class="status" id="status" role="status"></span>
+    </div>
+
+    <div class="settings" id="settings" hidden>
+      <label class="field"><span>Microphone</span><select id="micSel"></select></label>
+      <label class="field"><span>Camera</span><select id="camSel"></select></label>
+      <label class="field"><span>Sensitivity: <output id="gainOut">10</output></span>
+        <input id="gain" type="range" min="1" max="40" step="0.5" value="10" />
+      </label>
+      <div class="field"><span>Input level (pink line is the level a pluck has to beat)</span>
+        <div class="meter" aria-hidden="true"><i id="meterFill"></i><b id="meterGate"></b></div>
+        <p class="hint">Raise sensitivity if daisies rarely appear, lower it if they never stop.</p>
+      </div>
+      <div class="field"><span>View</span>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" id="mirror" type="button" aria-pressed="true" data-hover>Mirror<kbd>M</kbd></button>
+          <button class="btn" id="debug" type="button" aria-pressed="false" data-hover>Show tracking<kbd>T</kbd></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <p>Works best on a laptop in Chrome, Safari or Edge, with the guitar's sound hole in the lower half of the frame. Without a guitar, clapping or singing works too: the daisies then start from the middle of the picture.</p>
+    </div>
+  </div>
+
+  <video id="cam" playsinline muted hidden></video>
+
+  <script src="site.js" defer></script>
+  <script type="module">
+  // Guitar Daisies, browser version of the TouchDesigner patch /project1/guitar_daisies.
+  // Same chain: mic level -> daisy spawner -> sprites over the camera, blur with loudness,
+  // zoom-smear feedback and noise wobble on each spawn, hand + sound-hole tracking for where daisies start.
+
+  const $ = (id) => document.getElementById(id);
+  const W = 1280, H = 720, ASPECT = H / W;
+
+  // ───────────────────────── settings (remembered per browser) ─────────────────────────
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem('daisies.' + k); return v === null ? d : v; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('daisies.' + k, v); } catch (e) {} },
+  };
+  let GAIN = parseFloat(store.get('gain', '10')) || 10;   // raise if daisies rarely appear, lower if too many
+  let mirror = store.get('mirror', '1') === '1';
+  let debug = false;
+
+  // ───────────────────────── spawner constants (same values as the patch) ─────────────────────────
+  const THRESH = 0.12;        // absolute minimum level for a daisy (after gain)
+  const FLOOR_MULT = 3.0;     // guitar must be this many times louder than the room
+  const FLOOR_ADD = 0.06;     // ...plus this margin
+  const ONSET = 0.03;         // how sharp a rise counts as a pluck / strum
+  const N_FLOWERS = 11;
+  const FINGER_DAISIES = 2;   // daisies per pluck from the busiest fretting fingertips
+  const GRAVITY = 1.6;
+  const GROUND = -0.5625;     // bottom edge of the frame
+  const PLANT_MIN = 0.03, PLANT_MAX = 0.30;
+  const GROW_TIME = 0.7;
+  const MAX_PLANTED = 70;     // the oldest flowers wilt away beyond this
+  const N_STEMS = 6;
+  const STEM_W_MIN = 0.06, STEM_W_MAX = 0.11;
+  const FLYING = 0, PLANTED = 1, WILTING = 2;
+  const RATE = 60;            // the patch ran at 60 fps; the logic keeps that clock
+
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const rint = (n) => Math.floor(Math.random() * n);
+  const mod = (a, n) => ((a % n) + n) % n;
+
+  const S = { ds: [], prev: 0, cool: 0, floor: null, kick: 0, gated: 0, gate: THRESH, lvl: 0 };
+  let track = { hole: null, tips: [] };     // emitters from the tracker, in scene units
+
+  function launch(x, y, lvl, small) {
+    const ang = rnd(25, 155) * Math.PI / 180;            // mostly upward, then gravity brings it down
+    const speed = (0.45 + lvl * 0.9) * rnd(0.7, 1.3);
+    const size = (0.05 + lvl * 0.12) * rnd(0.7, 1.3) * (small ? 0.8 : 1.0);
+    S.ds.push({
+      x, y, vx: speed * Math.cos(ang), vy: speed * Math.sin(ang), size,
+      rot: rnd(0, 360), spin: rnd(-200, 200), age: 0, type: rint(N_FLOWERS), state: FLYING, grow: 0,
+      height: rnd(PLANT_MIN, PLANT_MAX), tilt: rnd(-12, 12), phase: rnd(0, 6.28), stem: rint(N_STEMS),
+    });
+  }
+
+  function step(d, dt) {
+    d.age += dt;
+    if (d.state === FLYING) {
+      d.vy -= GRAVITY * dt;
+      d.vx *= Math.max(0, 1 - 0.8 * dt);
+      d.x += d.vx * dt;
+      d.y += d.vy * dt;
+      d.rot += d.spin * dt;
+      if (Math.abs(d.x) > 0.97) {                          // bounce off the sides so it lands on screen
+        d.x = 0.97 * Math.sign(d.x);
+        d.vx = -d.vx * 0.5;
+      }
+      if ((d.y <= GROUND + 0.02 && d.vy < 0) || d.age > 6) {
+        d.state = PLANTED;
+        d.grow = 0;
+        d.rot = d.tilt + (mod(d.rot - d.tilt + 180, 360) - 180);
+      }
+    } else {
+      d.grow = Math.min(1, d.grow + dt / GROW_TIME);
+      d.rot += (d.tilt - d.rot) * Math.min(1, dt * 5);
+      if (d.state === WILTING) d.size *= Math.max(0, 1 - 4 * dt);
+    }
+    return d.state !== WILTING || d.size > 0.004;
+  }
+
+  function tick(steps, lvl) {
+    const dt = steps / RATE;
+    S.cool = Math.max(0, S.cool - steps);
+    S.ds = S.ds.filter((d) => step(d, dt));
+    const planted = S.ds.filter((d) => d.state === PLANTED);
+    for (let i = 0; i < planted.length - MAX_PLANTED; i++) planted[i].state = WILTING;
+
+    // ambience gate: learn the room's noise floor (drops fast, rises very slowly)
+    if (S.floor === null || lvl < S.floor) S.floor = lvl;
+    else S.floor += (lvl - S.floor) * 0.0008 * Math.max(1, steps);
+    const gate = Math.max(THRESH, S.floor * FLOOR_MULT + FLOOR_ADD);
+    const playing = lvl > gate;
+    const gated = playing ? Math.max(0, (lvl - gate) / Math.max(1e-6, 1 - gate)) : 0;
+
+    let spawned = false;
+    if (playing && S.cool === 0 && (lvl - S.prev > ONSET || Math.random() < gated * 0.4)) {
+      const { hole, tips } = track;
+      if (hole) for (let i = 0; i < 1 + Math.floor(lvl * 3); i++) launch(hole[0], hole[1], lvl, false);
+      if (tips.length) {
+        for (const t of [...tips].sort((a, b) => b[2] - a[2]).slice(0, FINGER_DAISIES)) launch(t[0], t[1], lvl, true);
+      }
+      if (!hole && !tips.length) for (let i = 0; i < 1 + Math.floor(lvl * 3); i++) launch(0, 0, lvl, false);
+      S.cool = 4;
+      spawned = true;
+    }
+    S.kick *= Math.pow(0.85, steps);
+    if (spawned) S.kick = Math.min(1, Math.max(S.kick, 0.6 + 0.4 * gated));
+    S.prev = lvl; S.gated = gated; S.gate = gate; S.lvl = lvl;
+  }
+
+  // ───────────────────────── sprites (2D canvas, uploaded as one texture) ─────────────────────────
+  const spr = document.createElement('canvas');
+  spr.width = W; spr.height = H;
+  const sctx = spr.getContext('2d');
+  const U = W / 2;                                           // pixels per scene unit (ortho width 2)
+  const px = (x) => (x + 1) * U, py = (y) => (ASPECT - y) * U;
+
+  const loadImg = (src) => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+  const two = (n) => String(n).padStart(2, '0');
+  const flowerImgs = [], stemImgs = [];
+  const spritesReady = Promise.all([
+    ...Array.from({ length: N_FLOWERS }, (_, k) => loadImg(`images/daisies/flower_${two(k + 1)}.png`).then((i) => { flowerImgs[k] = i; })),
+    ...Array.from({ length: N_STEMS }, (_, k) => loadImg(`images/daisies/stem_${two(k + 1)}.png`).then((i) => { stemImgs[k] = i; })),
+  ]);
+
+  function drawSprites(t) {
+    sctx.clearRect(0, 0, W, H);
+    const flowers = [];
+    for (const d of S.ds) {                                   // stems first, flowers on top
+      if (d.state === FLYING) {
+        flowers.push([d, d.x, d.y, d.rot, d.size * Math.min(1, 0.3 + d.age * 4)]);
+        continue;
+      }
+      const e = 1 - Math.pow(1 - d.grow, 3);                  // ease-out growth
+      const fy = GROUND + d.height * e + d.size * 0.4;
+      const sway = Math.sin(t * 1.4 + d.phase) * 3;
+      const top = fy - d.size * 0.2;                          // tuck the stem top under the flower
+      const h = Math.max(0, top - GROUND);
+      if (h > 0.01) {
+        const w = Math.min(STEM_W_MAX, Math.max(STEM_W_MIN, h * 0.4));
+        sctx.drawImage(stemImgs[d.stem], px(d.x) - w * U / 2, py(GROUND + h), w * U, h * U);
+      }
+      flowers.push([d, d.x, fy, d.rot + sway, d.size]);
+    }
+    for (const [d, x, y, r, sc] of flowers) {
+      const s = sc * 1.5 * U;
+      sctx.save();
+      sctx.translate(px(x), py(y));
+      sctx.rotate(-r * Math.PI / 180);
+      sctx.drawImage(flowerImgs[d.type], -s / 2, -s / 2, s, s);
+      sctx.restore();
+    }
+    if (debug) {
+      sctx.lineWidth = 3;
+      if (track.hole) {
+        sctx.strokeStyle = '#ff8fc8';
+        sctx.beginPath(); sctx.arc(px(track.hole[0]), py(track.hole[1]), 26, 0, 6.3); sctx.stroke();
+      }
+      sctx.fillStyle = '#a3baff';
+      for (const t2 of track.tips) { sctx.beginPath(); sctx.arc(px(t2[0]), py(t2[1]), 7, 0, 6.3); sctx.fill(); }
+    }
+  }
+
+  // ───────────────────────── WebGL chain ─────────────────────────
+  const view = $('view');
+  const gl = view.getContext('webgl', { alpha: false, antialias: false, premultipliedAlpha: false });
+
+  const VS = `attribute vec2 p; varying vec2 v; void main(){ v = p * 0.5 + 0.5; gl_Position = vec4(p, 0.0, 1.0); }`;
+  const FS = {
+    // camera -> 1280x720 (cover fit), mirrored or not
+    prep: `precision mediump float; varying vec2 v; uniform sampler2D t; uniform vec2 sc; uniform float mir; uniform float on; uniform vec3 bg;
+      void main(){ vec2 u = v; if (mir > 0.5) u.x = 1.0 - u.x; u = (u - 0.5) * sc + 0.5; gl_FragColor = vec4(mix(bg, texture2D(t, u).rgb, on), 1.0); }`,
+    blur: `precision mediump float; varying vec2 v; uniform sampler2D t; uniform vec2 d;
+      void main(){ vec3 c = texture2D(t, v).rgb * 0.1964826;
+        c += (texture2D(t, v + d * 1.4117647).rgb + texture2D(t, v - d * 1.4117647).rgb) * 0.2969069;
+        c += (texture2D(t, v + d * 3.2941176).rgb + texture2D(t, v - d * 3.2941176).rgb) * 0.0944703;
+        c += (texture2D(t, v + d * 5.1764706).rgb + texture2D(t, v - d * 5.1764706).rgb) * 0.0103814;
+        gl_FragColor = vec4(c, 1.0); }`,
+    // daisies over video
+    over: `precision mediump float; varying vec2 v; uniform sampler2D t; uniform sampler2D s;
+      void main(){ vec4 a = texture2D(s, v); gl_FragColor = vec4(a.rgb + texture2D(t, v).rgb * (1.0 - a.a), 1.0); }`,
+    // cross-fade towards a zoomed, slightly rotated copy of the last frame
+    smear: `precision mediump float; varying vec2 v; uniform sampler2D t; uniform sampler2D f; uniform float k;
+      void main(){ float z = 1.0 + k * 0.05; float a = radians(k * 1.5); vec2 q = (v - 0.5) * vec2(${(W / H).toFixed(6)}, 1.0) / z;
+        q = vec2(q.x * cos(a) + q.y * sin(a), -q.x * sin(a) + q.y * cos(a)); q = q / vec2(${(W / H).toFixed(6)}, 1.0) + 0.5;
+        gl_FragColor = vec4(mix(texture2D(t, v).rgb, texture2D(f, q).rgb, k * 0.45), 1.0); }`,
+    // noise displacement
+    distort: `precision mediump float; varying vec2 v; uniform sampler2D t; uniform float k; uniform float time;
+      float h(vec3 p){ return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
+      float n(vec3 p){ vec3 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+        return mix(mix(mix(h(i), h(i + vec3(1,0,0)), f.x), mix(h(i + vec3(0,1,0)), h(i + vec3(1,1,0)), f.x), f.y),
+                   mix(mix(h(i + vec3(0,0,1)), h(i + vec3(1,0,1)), f.x), mix(h(i + vec3(0,1,1)), h(i + vec3(1,1,1)), f.x), f.y), f.z); }
+      void main(){ vec3 p = vec3(v * vec2(5.0, 2.8), time * 2.0); float m = n(p) * 0.65 + n(p * 2.0 + 7.0) * 0.35;
+        gl_FragColor = vec4(texture2D(t, v + (m - 0.5) * k * 0.022).rgb, 1.0); }`,
+  };
+
+  function program(fs) {
+    const mk = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; };
+    const p = gl.createProgram();
+    gl.attachShader(p, mk(gl.VERTEX_SHADER, VS)); gl.attachShader(p, mk(gl.FRAGMENT_SHADER, fs));
+    gl.bindAttribLocation(p, 0, 'p'); gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    const u = {};
+    for (let i = 0; i < gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS); i++) { const n = gl.getActiveUniform(p, i).name; u[n] = gl.getUniformLocation(p, n); }
+    return { p, u };
+  }
+  function texture() {
+    const t = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    return t;
+  }
+  function target() {
+    const tex = texture();
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, W, H, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    const fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    gl.clearColor(0, 0, 0, 1); gl.clear(gl.COLOR_BUFFER_BIT);
+    return { tex, fb };
+  }
+
+  let P, T, tVideo, tSpr, fbPrev, fbNext, glReady = false;
+  function initGL() {
+    if (!gl) throw new Error('WebGL is not available in this browser.');
+    P = {}; for (const k in FS) P[k] = program(FS[k]);
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    tVideo = texture();
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([12, 15, 29, 255]));
+    tSpr = texture();
+    T = { vid: target(), a: target(), b: target(), comp: target() };
+    fbPrev = target(); fbNext = target();
+    glReady = true;
+  }
+  function pass(prog, dst, tex, set) {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, dst ? dst.fb : null);
+    gl.viewport(0, 0, W, H);
+    gl.useProgram(prog.p);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex); gl.uniform1i(prog.u.t, 0);
+    if (set) set(prog.u);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+
+  const cam = $('cam');
+  let hasVideo = false;
+  function render(time) {
+    const live = hasVideo && cam.readyState >= 2 && cam.videoWidth > 0;
+    let sx = 1, sy = 1;
+    if (live) {
+      gl.bindTexture(gl.TEXTURE_2D, tVideo);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, cam);
+      const av = cam.videoWidth / cam.videoHeight, at = W / H;
+      if (av > at) sx = at / av; else sy = av / at;
+    }
+    gl.bindTexture(gl.TEXTURE_2D, tSpr);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, spr);
+
+    pass(P.prep, T.vid, tVideo, (u) => { gl.uniform2f(u.sc, sx, sy); gl.uniform1f(u.mir, mirror ? 1 : 0); gl.uniform1f(u.on, live ? 1 : 0); gl.uniform3f(u.bg, 0.047, 0.059, 0.114); });
+
+    // blur: 0 px with only room noise, about 14 px when loud
+    let src = T.vid;
+    const size = S.gated * 14;
+    if (size > 0.4) {
+      const sp = size / 6;
+      pass(P.blur, T.a, T.vid.tex, (u) => gl.uniform2f(u.d, sp / W, 0));
+      pass(P.blur, T.b, T.a.tex, (u) => gl.uniform2f(u.d, 0, sp / H));
+      src = T.b;
+    }
+    pass(P.over, T.comp, src.tex, (u) => { gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, tSpr); gl.uniform1i(u.s, 1); });
+    pass(P.smear, fbNext, T.comp.tex, (u) => { gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, fbPrev.tex); gl.uniform1i(u.f, 1); gl.uniform1f(u.k, S.kick); });
+    pass(P.distort, null, fbNext.tex, (u) => { gl.uniform1f(u.k, S.kick); gl.uniform1f(u.time, time % 1000); });
+    const sw = fbPrev; fbPrev = fbNext; fbNext = sw;
+  }
+
+  // ───────────────────────── audio level ─────────────────────────
+  let actx = null, analyser = null, abuf = null, level = 0;
+  function readLevel(dt) {
+    if (!analyser) return 0;
+    analyser.getFloatTimeDomainData(abuf);
+    let sum = 0;
+    for (let i = 0; i < abuf.length; i++) sum += abuf[i] * abuf[i];
+    const v = Math.sqrt(sum / abuf.length) * GAIN;           // RMS power, then gain
+    if (v >= level) level = v;                               // instant attack
+    else level += (v - level) * (1 - Math.exp(-dt / 0.05));  // short release (about 0.15 s)
+    return Math.min(1, Math.max(0, level));
+  }
+
+  // ───────────────────────── tracking: hands (MediaPipe) + sound hole ─────────────────────────
+  const TW = 320, TH = 180;
+  const tcan = document.createElement('canvas');
+  tcan.width = TW; tcan.height = TH;
+  const tctx = tcan.getContext('2d', { willReadFrequently: true });
+  const TIP_IDS = [4, 8, 12, 16, 20];
+  const HOLE_MIN_CONTRAST = 18, HOLE_MAX_JUMP = 0.18, HOLE_SMOOTH = 0.2, HOLE_HOLD = 2.0, HOLE_MIN_Y = 0.45, HOLE_NEAR_HAND = 0.35;
+  const HOLE_RADII = [5, 7, 9, 12, 15, 19, 24, 30, 38];
+  const scene = (x, y) => [(x - 0.5) * 2, (0.5 - y) * 2 * ASPECT];
+  const integral = new Float64Array((TW + 1) * (TH + 1));
+  const gray = new Float32Array(TW * TH);
+  let hands = null, handsState = 'off', holeLock = null, holeSeen = -99, prevTips = null;
+
+  async function loadHands() {
+    handsState = 'loading'; showStatus();
+    try {
+      const MP = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
+      const { FilesetResolver, HandLandmarker } = await import(MP + '/vision_bundle.mjs');
+      const files = await FilesetResolver.forVisionTasks(MP + '/wasm');
+      const opts = (delegate) => ({
+        baseOptions: { modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task', delegate },
+        runningMode: 'VIDEO', numHands: 2,
+        minHandDetectionConfidence: 0.5, minHandPresenceConfidence: 0.5, minTrackingConfidence: 0.5,
+      });
+      try { hands = await HandLandmarker.createFromOptions(files, opts('GPU')); }
+      catch (e) { hands = await HandLandmarker.createFromOptions(files, opts('CPU')); }
+      handsState = 'on';
+    } catch (e) {
+      console.warn('Hand tracking unavailable:', e);
+      handsState = 'failed';
+    }
+    showStatus();
+  }
+
+  // mean brightness of a box, from the integral image
+  function box(cx, cy, r) {
+    const x0 = Math.max(0, Math.round(cx - r)), y0 = Math.max(0, Math.round(cy - r));
+    const x1 = Math.min(TW, Math.round(cx + r) + 1), y1 = Math.min(TH, Math.round(cy + r) + 1);
+    if (x1 <= x0 || y1 <= y0) return -1;
+    const s = TW + 1;
+    return (integral[y1 * s + x1] - integral[y0 * s + x1] - integral[y1 * s + x0] + integral[y0 * s + x0]) / ((x1 - x0) * (y1 - y0));
+  }
+
+  // dark round patch with brighter wood around it, low in the frame and near the strumming hand
+  function findHole(strum, now) {
+    const img = tctx.getImageData(0, 0, TW, TH).data, s = TW + 1;
+    for (let y = 0; y < TH; y++) {
+      let row = 0;
+      for (let x = 0; x < TW; x++) {
+        const i = (y * TW + x) * 4;
+        const g = img[i] * 0.299 + img[i + 1] * 0.587 + img[i + 2] * 0.114;
+        gray[y * TW + x] = g;
+        row += g;
+        integral[(y + 1) * s + x + 1] = integral[y * s + x + 1] + row;
+      }
+    }
+    const locked = holeLock && now - holeSeen < HOLE_HOLD;
+    let best = null, bestScore = -1e9, bestR = 0, bestCut = 0;
+    for (let cy = Math.ceil(TH * HOLE_MIN_Y); cy < TH - 4; cy += 2) {
+      const ny = cy / TH;
+      for (let cx = 6; cx < TW - 6; cx += 2) {
+        const nx = cx / TW;
+        if (strum && Math.hypot(nx - strum[0], ny - strum[1]) > HOLE_NEAR_HAND) continue;
+        if (locked && Math.hypot(nx - holeLock[0], ny - holeLock[1]) > HOLE_MAX_JUMP) continue;
+        for (const r of HOLE_RADII) {
+          const inner = box(cx, cy, r * 0.45);
+          const q = Math.max(1, r * 0.22), o = r * 1.55, m = r * 0.62;
+          const ring = [box(cx - o, cy, q), box(cx + o, cy, q), box(cx, cy - o, q), box(cx, cy + o, q)];
+          let sides = 0, sum = 0, n = 0;
+          for (const v of ring) { if (v < 0) continue; n++; sum += v; if (v - inner >= HOLE_MIN_CONTRAST * 0.7) sides++; }
+          if (n < 3 || sides < 3) continue;
+          const contrast = sum / n - inner;
+          if (contrast < HOLE_MIN_CONTRAST) continue;
+          // the dark patch has to reach most of the way to the rim, so small dark specks do not count
+          const mid = (box(cx - m, cy, q) + box(cx + m, cy, q) + box(cx, cy - m, q) + box(cx, cy + m, q)) / 4;
+          if (mid - inner > contrast * 0.45) continue;
+          let score = contrast;
+          if (holeLock) score -= Math.hypot(nx - holeLock[0], ny - holeLock[1]) * 80;
+          if (strum) score -= Math.hypot(nx - strum[0], ny - strum[1]) * 30;
+          if (score > bestScore) { bestScore = score; best = [cx, cy]; bestR = r; bestCut = inner + contrast * 0.5; }
+        }
+      }
+    }
+    if (!best) return null;
+    // centre on the dark patch itself (strings and fingers pull the box test off-centre)
+    let sx = 0, sy = 0, n = 0;
+    const R = bestR * 1.3;
+    for (let y = Math.max(0, Math.floor(best[1] - R)); y <= Math.min(TH - 1, best[1] + R); y++) {
+      for (let x = Math.max(0, Math.floor(best[0] - R)); x <= Math.min(TW - 1, best[0] + R); x++) {
+        if ((x - best[0]) ** 2 + (y - best[1]) ** 2 > R * R || gray[y * TW + x] > bestCut) continue;
+        sx += x; sy += y; n++;
+      }
+    }
+    return n > 8 ? [sx / n / TW, sy / n / TH] : [best[0] / TW, best[1] / TH];
+  }
+
+  function runTracking(now) {
+    if (!(hasVideo && cam.readyState >= 2 && cam.videoWidth > 0)) { track = { hole: null, tips: [] }; return; }
+    // same picture the viewer sees: cover fit, mirrored or not
+    const vw = cam.videoWidth, vh = cam.videoHeight, av = vw / vh, at = TW / TH;
+    const sw = av > at ? vh * at : vw, sh = av > at ? vh : vw / at;
+    tctx.save();
+    if (mirror) { tctx.translate(TW, 0); tctx.scale(-1, 1); }
+    tctx.drawImage(cam, (vw - sw) / 2, (vh - sh) / 2, sw, sh, 0, 0, TW, TH);
+    tctx.restore();
+
+    let found = [];
+    if (hands) {
+      try {
+        const res = hands.detectForVideo(tcan, performance.now());
+        found = (res.landmarks || []).map((p) => ({ wrist: [p[0].x, p[0].y], tips: TIP_IDS.map((i) => [p[i].x, p[i].y]) }));
+      } catch (e) { /* skip this frame */ }
+    }
+    // right-handed player: in the mirror view the strumming hand is on the right, fretting hand on the left
+    const byX = [...found].sort((a, b) => a.wrist[0] - b.wrist[0]);
+    const strum = found.length > 1 ? (mirror ? byX[byX.length - 1] : byX[0]) : null;
+    const fret = found.length > 1 ? (mirror ? byX[0] : byX[byX.length - 1]) : (found[0] || null);
+
+    if (holeLock && (holeLock[1] < HOLE_MIN_Y || (strum && Math.hypot(holeLock[0] - strum.wrist[0], holeLock[1] - strum.wrist[1]) > HOLE_NEAR_HAND))) {
+      holeLock = null; holeSeen = -99;                         // bad lock: forget it and search again
+    }
+    const hit = findHole(strum ? strum.wrist : null, now);
+    if (hit) {
+      holeLock = holeLock ? [holeLock[0] + (hit[0] - holeLock[0]) * HOLE_SMOOTH, holeLock[1] + (hit[1] - holeLock[1]) * HOLE_SMOOTH] : hit;
+      holeSeen = now;
+    }
+    const holeOn = holeLock && now - holeSeen < HOLE_HOLD;
+
+    let tips = [];
+    if (fret) {
+      const pts = fret.tips.map((t) => scene(t[0], t[1]));
+      tips = pts.map((p, k) => [p[0], p[1], prevTips ? Math.hypot(p[0] - prevTips[k][0], p[1] - prevTips[k][1]) : 0]);
+      prevTips = pts;
+    } else prevTips = null;
+    track = { hole: holeOn ? scene(holeLock[0], holeLock[1]) : null, tips };
+  }
+
+  // ───────────────────────── devices ─────────────────────────
+  let stream = null, running = false, raf = 0;
+  const micSel = $('micSel'), camSel = $('camSel');
+
+  async function openStream() {
+    const mic = store.get('mic', ''), camId = store.get('cam', '');
+    // processing off: echo cancelling, noise suppression and auto gain all flatten a guitar
+    const audio = { echoCancellation: false, noiseSuppression: false, autoGainControl: false };
+    if (mic) audio.deviceId = { exact: mic };
+    const video = { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 60 } };
+    if (camId) video.deviceId = { exact: camId };
+    const md = navigator.mediaDevices;
+    if (!md || !md.getUserMedia) throw new Error('This browser cannot open the camera or microphone on this page.');
+    const attempts = [{ audio, video }, { audio: { ...audio, deviceId: undefined }, video: { ...video, deviceId: undefined } }, { audio: true, video: false }, { audio: false, video: true }];
+    let last;
+    for (const c of attempts) {
+      try { return await md.getUserMedia(c); } catch (e) { last = e; if (e && e.name === 'NotAllowedError') break; }
+    }
+    throw last;
+  }
+
+  async function listDevices() {
+    const devs = await navigator.mediaDevices.enumerateDevices();
+    const cur = { audioinput: '', videoinput: '' };
+    if (stream) {
+      const a = stream.getAudioTracks()[0], v = stream.getVideoTracks()[0];
+      if (a) cur.audioinput = a.getSettings().deviceId || '';
+      if (v) cur.videoinput = v.getSettings().deviceId || '';
+    }
+    for (const [sel, kind] of [[micSel, 'audioinput'], [camSel, 'videoinput']]) {
+      sel.textContent = '';
+      devs.filter((d) => d.kind === kind).forEach((d, i) => {
+        const o = document.createElement('option');
+        o.value = d.deviceId; o.textContent = d.label || (kind === 'audioinput' ? 'Microphone ' : 'Camera ') + (i + 1);
+        if (d.deviceId === cur[kind]) o.selected = true;
+        sel.appendChild(o);
+      });
+    }
+  }
+
+  function closeStream() {
+    if (stream) stream.getTracks().forEach((t) => t.stop());
+    stream = null; analyser = null; hasVideo = false;
+    cam.srcObject = null;
+  }
+
+  async function connect() {
+    closeStream();
+    stream = await openStream();
+    if (stream.getAudioTracks().length) {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state === 'suspended') await actx.resume();
+      const src = actx.createMediaStreamSource(stream);
+      const split = actx.createChannelSplitter(2);            // first input channel only, like the patch
+      analyser = actx.createAnalyser();
+      analyser.fftSize = 1024;
+      analyser.smoothingTimeConstant = 0;
+      src.connect(split); split.connect(analyser, 0);
+      abuf = new Float32Array(analyser.fftSize);
+    }
+    if (stream.getVideoTracks().length) {
+      cam.srcObject = stream;
+      await cam.play().catch(() => {});
+      hasVideo = true;
+    }
+    S.floor = null; level = 0;
+    await listDevices();
+  }
+
+  // ───────────────────────── main loop ─────────────────────────
+  let lastT = 0, acc = 0, frameNo = 0;
+  function frame(ms) {
+    if (!running) return;
+    raf = requestAnimationFrame(frame);
+    const now = ms / 1000;
+    const dt = Math.min(0.25, Math.max(0, now - lastT));
+    lastT = now;
+    acc += dt * RATE;
+    const steps = Math.floor(acc);
+    if (steps > 0) {
+      acc -= steps;
+      frameNo += steps;
+      const lvl = readLevel(steps / RATE);
+      if (frameNo % 2 < steps) runTracking(now);               // hand the tracker a fresh frame every other tick
+      tick(steps, lvl);
+      updateMeter();
+    }
+    drawSprites(now);
+    render(now);
+  }
+
+  // ───────────────────────── page controls ─────────────────────────
+  const overlay = $('overlay'), msg = $('overlayMsg'), statusEl = $('status');
+  function showStatus() {
+    const parts = [];
+    if (running) {
+      if (!analyser) parts.push('No microphone');
+      if (!hasVideo) parts.push('No camera');
+      parts.push({ loading: 'Hand tracking loading', on: 'Hand tracking on', failed: 'Hand tracking unavailable, daisies start from the sound hole or the middle', off: '' }[handsState]);
+    }
+    statusEl.textContent = parts.filter(Boolean).join(' · ');
+  }
+  function updateMeter() {
+    if ($('settings').hidden) return;
+    $('meterFill').style.width = (S.lvl * 100).toFixed(1) + '%';
+    $('meterGate').style.left = (Math.min(1, S.gate) * 100).toFixed(1) + '%';
+  }
+
+  async function start() {
+    $('start').disabled = true;
+    msg.classList.remove('err');
+    msg.textContent = 'Waiting for the camera and microphone…';
+    try {
+      if (!glReady) initGL();
+      await spritesReady;
+      await connect();
+    } catch (e) {
+      console.error(e);
+      $('start').disabled = false;
+      msg.classList.add('err');
+      msg.textContent = e && e.name === 'NotAllowedError'
+        ? 'Camera and microphone access was blocked. Allow both for this site in your browser, then press Start again.'
+        : e && e.name === 'NotFoundError'
+          ? 'No camera or microphone was found on this device.'
+          : 'Could not start: ' + (e && e.message ? e.message : e);
+      return;
+    }
+    overlay.hidden = true;
+    $('controls').hidden = false;
+    running = true;
+    lastT = performance.now() / 1000; acc = 0;
+    raf = requestAnimationFrame(frame);
+    showStatus();
+    if (handsState === 'off' && hasVideo) loadHands();
+  }
+
+  function stop() {
+    running = false;
+    cancelAnimationFrame(raf);
+    closeStream();
+    if (actx) actx.suspend();
+    S.ds = []; S.kick = 0; S.gated = 0; track = { hole: null, tips: [] };
+    $('controls').hidden = true; $('settings').hidden = true;
+    $('settingsBtn').setAttribute('aria-pressed', 'false');
+    $('start').disabled = false;
+    msg.classList.remove('err');
+    msg.textContent = 'Stopped. The camera and microphone are off.';
+    overlay.hidden = false;
+  }
+
+  const clearGarden = () => { S.ds = []; };
+  const toggleFull = () => {
+    const st = $('stage');
+    if (document.fullscreenElement || document.webkitFullscreenElement) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    else (st.requestFullscreen || st.webkitRequestFullscreen).call(st);
+  };
+  const setMirror = (v) => { mirror = v; store.set('mirror', v ? '1' : '0'); $('mirror').setAttribute('aria-pressed', String(v)); holeLock = null; prevTips = null; };
+  const setDebug = (v) => { debug = v; $('debug').setAttribute('aria-pressed', String(v)); };
+
+  $('start').addEventListener('click', start);
+  $('stop').addEventListener('click', stop);
+  $('clear').addEventListener('click', clearGarden);
+  $('full').addEventListener('click', toggleFull);
+  $('mirror').addEventListener('click', () => setMirror(!mirror));
+  $('debug').addEventListener('click', () => setDebug(!debug));
+  $('settingsBtn').addEventListener('click', () => {
+    const s = $('settings'); s.hidden = !s.hidden;
+    $('settingsBtn').setAttribute('aria-pressed', String(!s.hidden));
+  });
+  $('gain').value = GAIN; $('gainOut').textContent = GAIN;
+  $('gain').addEventListener('input', (e) => { GAIN = parseFloat(e.target.value); $('gainOut').textContent = GAIN; store.set('gain', GAIN); S.floor = null; });
+  $('mirror').setAttribute('aria-pressed', String(mirror));
+  micSel.addEventListener('change', async () => { store.set('mic', micSel.value); try { await connect(); } catch (e) { console.error(e); } showStatus(); });
+  camSel.addEventListener('change', async () => { store.set('cam', camSel.value); try { await connect(); } catch (e) { console.error(e); } showStatus(); });
+
+  document.addEventListener('keydown', (e) => {
+    if (!running || e.metaKey || e.ctrlKey || e.altKey) return;
+    const tag = e.target && e.target.tagName;
+    if (tag === 'SELECT' || tag === 'INPUT' || tag === 'TEXTAREA') return;
+    const k = e.key.toLowerCase();
+    if (k === 'c') clearGarden();
+    else if (k === 'f') toggleFull();
+    else if (k === 'm') setMirror(!mirror);
+    else if (k === 't') setDebug(!debug);
+  });
+
+  // hooks for testing from the console
+  window.__daisies = { S, launch, get track() { return track; }, get level() { return level; } };
+  </script>
+</body>
+</html>
