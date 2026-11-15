@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harmoniser — Aditya Borkar</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="theme-color" content="#fffff2" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0c0f1d" media="(prefers-color-scheme: dark)" />
+  <script>try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="preload" href="fonts/Zodiak-Variable.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="canonical" href="https://adityaborkar.art/harmoniser.html" />
+  <meta name="description" content="Harmoniser: play or sing one note and four more join it. Pick the harmony with the number keys or by where you look." />
+  <meta property="og:title" content="Harmoniser — Aditya Borkar" />
+  <meta property="og:description" content="Play or sing one note and four more join it. Pick the harmony with the number keys or by where you look." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://adityaborkar.art/harmoniser.html" />
+  <meta name="twitter:card" content="summary" />
+  <style>
+    @font-face {
+      font-family: 'Zodiak';
+      src: url('fonts/Zodiak-Variable.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Zodiak';
+      src: url('fonts/Zodiak-VariableItalic.woff2') format('woff2-variations');
+      font-weight: 100 900;
+      font-style: italic;
+      font-display: swap;
+    }
+  </style>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0b5aff;
+      --bg: #fffff2;
+      --rule: rgb(var(--blue-rgb) / 0.22);
+    }
+
+    ::selection { background: rgb(var(--blue-rgb) / 0.15); }
+
+    html, body { width: 100%; min-height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--blue);
+      font-family: 'Zodiak', Georgia, serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    html.custom-cursor, html.custom-cursor * { cursor: none !important; }
+    html:not(.custom-cursor) #cursor { display: none; }
+
+    a { color: inherit; text-decoration: none; }
+
+    #cursor {
+      position: fixed;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--blue);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s ease, opacity 0.15s ease;
+      will-change: transform;
+    }
+    #cursor.hovering { transform: translate(-50%, -50%) scale(2.2); opacity: 0.4; }
+
+    /* ── NAV ───────────────────────────────────────────────── */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 44px 52px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .nav-name { font-size: 22px; font-weight: 400; letter-spacing: -0.3px; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { font-size: 18px; letter-spacing: -0.3px; transition: opacity 0.15s; }
+    .nav-links a:hover { opacity: 0.5; }
+
+    /* ── PAGE ──────────────────────────────────────────────── */
+    .page { padding: 52px 52px 80px; max-width: 1240px; }
+    .page-header { margin-bottom: 28px; }
+    .page-title { font-size: 14px; opacity: 0.5; }
+    .piece-title { font-size: 34px; font-weight: 500; letter-spacing: -0.8px; margin-top: 10px; }
+    .piece-intro { font-size: 17px; line-height: 1.5; max-width: 620px; margin-top: 12px; opacity: 0.85; }
+
+    /* ── STAGE ─────────────────────────────────────────────── */
+    .stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 1px solid var(--rule);
+      background: #0c0f1d;
+      overflow: hidden;
+    }
+    .stage canvas { display: block; width: 100%; height: 100%; object-fit: contain; }
+    .stage:fullscreen { border: 0; background: #000; aspect-ratio: auto; }
+    .stage:-webkit-full-screen { border: 0; background: #000; aspect-ratio: auto; }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 24px;
+      text-align: center;
+      background: var(--bg);
+      color: var(--blue);
+    }
+    .overlay[hidden] { display: none; }
+    .overlay img { width: 96px; height: 96px; }
+    .overlay p { font-size: 15px; line-height: 1.5; max-width: 440px; opacity: 0.85; }
+    .overlay .err { color: var(--pink); opacity: 1; }
+
+    .btn {
+      font: inherit;
+      font-size: 15px;
+      letter-spacing: -0.2px;
+      color: var(--blue);
+      background: transparent;
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn:hover { background: rgb(var(--blue-rgb) / 0.07); }
+    .btn.primary { font-size: 18px; padding: 11px 26px; border-color: var(--blue); }
+    .btn[aria-pressed="true"] { background: rgb(var(--blue-rgb) / 0.14); }
+    .btn kbd { font: inherit; font-size: 12px; opacity: 0.6; margin-left: 6px; }
+
+    /* ── CONTROLS ──────────────────────────────────────────── */
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
+    .controls[hidden] { display: none; }
+    .status { font-size: 14px; opacity: 0.72; margin-left: auto; }
+
+    .settings {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px 28px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--rule);
+    }
+    .settings[hidden] { display: none; }
+    .field { display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+    .field > span { opacity: 0.72; }
+    .field select {
+      font: inherit;
+      font-size: 15px;
+      color: var(--blue);
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 7px 8px;
+      width: 100%;
+    }
+    .field input[type="range"] { width: 100%; accent-color: var(--blue); }
+
+    .meter { position: relative; height: 10px; border: 1px solid var(--rule); border-radius: 999px; overflow: hidden; }
+    .meter i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--blue); opacity: 0.75; }
+    .meter b { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--pink); left: 12%; }
+    .hint { font-size: 13px; line-height: 1.45; opacity: 0.72; }
+
+    .notes { margin-top: 36px; max-width: 620px; font-size: 15px; line-height: 1.55; opacity: 0.85; }
+    .notes p + p { margin-top: 10px; }
+
+    @media (max-width: 860px) {
+      .nav { padding: 28px 20px 20px; flex-wrap: wrap; gap: 12px; }
+      .nav-links { gap: 16px; flex-wrap: wrap; }
+      .nav-links a { font-size: 15px; }
+      .page { padding: 36px 20px 60px; }
+      .piece-title { font-size: 27px; }
+      .settings { grid-template-columns: 1fr; }
+      .status { margin-left: 0; width: 100%; }
+      .overlay { gap: 9px; padding: 10px 14px; }
+      .overlay img { width: 40px; height: 40px; }
+      .overlay p { font-size: 12.5px; line-height: 1.35; }
+      .btn.primary { font-size: 16px; padding: 7px 20px; }
+    }
+
+    .eye-icon {
+      width: 150px; height: 80px; background: var(--blue);
+      -webkit-mask: url('images/harmoniser/eye_dots.png') center / contain no-repeat;
+      mask: url('images/harmoniser/eye_dots.png') center / contain no-repeat;
+    }
+    .field kbd { font: inherit; font-size: 12px; opacity: 0.7; margin-left: 4px; border: 1px solid var(--rule); border-radius: 4px; padding: 0 5px; }
+    .lookgrid { display: grid; grid-template-columns: 1fr; gap: 6px; }
+    .lookgrid label { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 8px; font-size: 14px; }
+    @media (max-width: 860px) { .eye-icon { width: 84px; height: 44px; } }
+  </style>
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+
+  <div id="cursor"></div>
+
+  <nav class="nav">
+    <a class="nav-name" href="index.html" data-hover>Aditya Borkar</a>
+    <div class="nav-links">
+      <a href="documentaries.html" data-hover>Documentaries</a>
+      <a href="performances.html" data-hover>Performances</a>
+      <a href="music.html" data-hover>Music</a>
+      <a href="written-works.html" data-hover>Written Works</a>
+      <a href="current-works.html" data-hover>Current Works</a>
+      <a href="past-works.html" data-hover>Past Works</a>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <div class="page-header">
+      <p class="page-title"><a href="current-works.html" data-hover>Current Works</a> / Interactive</p>
+      <h1 class="piece-title">Harmoniser</h1>
+      <p class="piece-intro">Play or sing one note and four more join it. Pick the chord with the number keys, or by where you look: left, right, up and down each call a different harmony, and looking straight ahead leaves you on your own.</p>
+    </div>
+
+    <div class="stage" id="stage">
+      <canvas id="view" width="1280" height="720" aria-label="Live camera with the harmoniser's meters"></canvas>
+      <div class="overlay" id="overlay">
+        <span class="eye-icon" aria-hidden="true"></span>
+        <button class="btn primary" id="start" type="button" data-hover>Start</button>
+        <p id="overlayMsg">Put headphones on first, or the microphone will hear the harmonies and howl. Your browser will ask for the camera and microphone. Nothing is recorded or sent anywhere. It all runs on this page.</p>
+      </div>
+    </div>
+
+    <div class="controls" id="controls" hidden>
+      <button class="btn" id="calib" type="button" data-hover>Calibrate eyes<kbd>C</kbd></button>
+      <button class="btn" id="auto" type="button" aria-pressed="false" data-hover>Auto key<kbd>`</kbd></button>
+      <button class="btn" id="full" type="button" data-hover>Full screen<kbd>F</kbd></button>
+      <button class="btn" id="settingsBtn" type="button" aria-pressed="false" data-hover>Settings</button>
+      <button class="btn" id="stop" type="button" data-hover>Stop</button>
+      <span class="status" id="status" role="status"></span>
+    </div>
+
+    <div class="settings" id="settings" hidden>
+      <label class="field"><span>Microphone <kbd>I</kbd></span><select id="micSel"></select></label>
+      <label class="field" id="outField"><span>Output <kbd>O</kbd></span><select id="outSel"></select></label>
+      <label class="field"><span>Camera</span><select id="camSel"></select></label>
+
+      <label class="field"><span>Chord (number row 1 to =)</span><select id="presetSel"></select></label>
+      <label class="field"><span>Harmony level: <output id="wetOut"></output></span>
+        <input id="wet" type="range" min="0" max="1.5" step="0.05" />
+      </label>
+      <label class="field"><span>Your own level: <output id="dryOut"></output></span>
+        <input id="dry" type="range" min="0" max="1.5" step="0.05" />
+      </label>
+
+      <label class="field"><span>Auto: key</span><select id="keySel"></select></label>
+      <label class="field"><span>Auto: scale</span><select id="scaleSel"></select></label>
+      <label class="field"><span>Auto: voicing</span><select id="voiceSel"></select></label>
+      <label class="field"><span>Key is written for</span>
+        <select id="keyFor"><option value="0">Concert pitch</option><option value="-2">B flat instrument</option><option value="3">E flat instrument</option></select>
+      </label>
+      <div class="field"><span>Eye triggers</span>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" id="eyesBtn" type="button" aria-pressed="true" data-hover>Follow my eyes</button>
+        </div>
+        <p class="hint">Press Calibrate eyes once and follow the prompts. It takes about 20 seconds and is remembered on this browser.</p>
+      </div>
+      <div class="field"><span>What each look plays</span>
+        <div class="lookgrid">
+          <label>Straight<select id="look-centre"></select></label>
+          <label>Left<select id="look-left"></select></label>
+          <label>Right<select id="look-right"></select></label>
+          <label>Up<select id="look-up"></select></label>
+          <label>Down<select id="look-down"></select></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <p>Works best on a laptop in Chrome or Edge, with headphones and one note at a time: sax, flute, voice, anything with a clear pitch. The SIGNAL meter shows how loud you are and the TUNE meter shows how many cents sharp or flat.</p>
+      <p>This is the browser version of a TouchDesigner patch I play saxophone into.</p>
+    </div>
+  </div>
+
+  <video id="cam" playsinline muted hidden></video>
+
+  <script src="site.js" defer></script>
+  <script type="text/plain" id="workletSrc">
+// Harmoniser engine: 4-voice pitch shifter with pitch tracking. Same maths as the 'engine' DAT in the patch.
+const NV = 4;
+const SCALES = {
+  major: [0, 2, 4, 5, 7, 9, 11], minor: [0, 2, 3, 5, 7, 8, 10], dorian: [0, 2, 3, 5, 7, 9, 10],
+  mixolydian: [0, 2, 4, 5, 7, 9, 10], lydian: [0, 2, 4, 6, 7, 9, 11], phrygian: [0, 1, 3, 5, 7, 8, 10],
+  harmminor: [0, 2, 3, 5, 7, 8, 11], melminor: [0, 2, 3, 5, 7, 9, 11],
+};
+const mod = (a, n) => ((a % n) + n) % n;
+
+function diatonicOffsets(midi, keyPc, scale, steps) {
+  const pcs = SCALES[scale] || SCALES.major;
+  const rel = mod(midi - keyPc, 12);
+  const deg = pcs.indexOf(rel);
+  if (deg < 0) return null;                       // played note is outside the scale
+  const n = pcs.length;
+  return steps.map((s) => { const d = deg + s; return Math.floor(d / n) * 12 + pcs[mod(d, n)] - rel; });
+}
+
+function chordOffsets(midi, pcs) {                // the four nearest chord tones below the played note
+  const out = [];
+  if (!pcs.length) return out;
+  for (let m = midi - 1; out.length < NV && m > midi - 48; m--) if (pcs.includes(mod(m, 12))) out.push(m - midi);
+  return out;
+}
+
+class Harmoniser {
+  constructor(sr) {
+    this.sr = sr;
+    this.size = 1 << 16;
+    this.mask = this.size - 1;
+    this.buf = new Float32Array(this.size);
+    this.w = 0;
+    this.phase = [0, 0.25, 0.5, 0.75];
+    this.semi = [0, 0, 0, 0];
+    this.gain = [0, 0, 0, 0];
+    this.win = 0.045 * sr;
+    this.freq = 0; this.midi = -1; this.cand = -1; this.candN = 0; this.level = 0;
+    this.offsets = [];
+    this.lim = 1;
+    this.sinceDetect = 0;
+    // pitch tracker works on a half-rate copy of the last 2048 samples
+    this.dn = 1024;
+    this.x = new Float64Array(this.dn);
+    this.c = new Float64Array(this.dn);
+    this.nsdf = new Float64Array(this.dn);
+  }
+
+  detect(fmin = 60, fmax = 2200) {
+    const n = this.dn, x = this.x, buf = this.buf, mask = this.mask, srd = this.sr / 2;
+    let mean = 0;
+    const base = this.w - 2 * n;
+    for (let i = 0; i < n; i++) {
+      const v = 0.5 * (buf[(base + 2 * i) & mask] + buf[(base + 2 * i + 1) & mask]);
+      x[i] = v; mean += v;
+    }
+    mean /= n;
+    let e = 0;
+    const c = this.c;
+    for (let i = 0; i < n; i++) { x[i] -= mean; e += x[i] * x[i]; c[i] = e; }
+    this.level = Math.sqrt(e / n);
+    if (e < 1e-9) return [0, 0];
+    const lo = Math.max(2, Math.floor(srd / fmax));
+    const hi = Math.min(n - 2, Math.floor(srd / fmin));
+    const nsdf = this.nsdf;
+    let start = -1;
+    for (let t = 0; t < hi; t++) {                 // McLeod normalised square difference function
+      let ac = 0;
+      for (let i = 0, m = n - t; i < m; i++) ac += x[i] * x[i + t];
+      const m = t === 0 ? 2 * e : (e - c[t - 1]) + c[n - 1 - t];
+      nsdf[t] = 2 * ac / Math.max(m, 1e-12);
+      if (start < 0 && nsdf[t] < 0) start = t;     // skip the lobe around lag 0
+    }
+    start = start < 0 ? lo : Math.max(lo, start);
+    if (hi - start < 3) return [0, 0];
+    // local maxima, measured at their interpolated tops so a peak between two samples is not undersold
+    let best = -Infinity, nP = 0;
+    const pk = this.pk || (this.pk = new Float64Array(3 * 256));
+    for (let k = start + 1; k < hi - 1 && nP < 256; k++) {
+      if (nsdf[k] > nsdf[k - 1] && nsdf[k] >= nsdf[k + 1]) {
+        const a = nsdf[k - 1], b = nsdf[k], c2 = nsdf[k + 1];
+        const den = a - 2 * b + c2;
+        const shift = Math.abs(den) > 1e-12 ? 0.5 * (a - c2) / den : 0;
+        const top = b - 0.25 * (a - c2) * shift;
+        pk[3 * nP] = k + shift; pk[3 * nP + 1] = top; nP++;
+        if (top > best) best = top;
+      }
+    }
+    for (let j = 0; j < nP; j++) if (pk[3 * j + 1] >= 0.9 * best) return [srd / pk[3 * j], pk[3 * j + 1]];
+    return [0, 0];
+  }
+
+  track(gate, clarityMin = 0.6, hold = 2) {
+    const [f, cl] = this.detect();
+    if (f <= 0 || cl < clarityMin || this.level < gate) return;
+    this.freq = f;
+    const m = Math.round(69 + 12 * Math.log2(f / 440));
+    if (m === this.midi) { this.candN = 0; return; }
+    if (m === this.cand) this.candN++; else { this.cand = m; this.candN = 1; }
+    if (this.candN >= hold) { this.midi = m; this.candN = 0; }
+  }
+
+  // x: mono block. L, R: output blocks. cfg: the settings posted from the page.
+  process(x, L, R, cfg) {
+    const n = x.length, sr = this.sr, buf = this.buf, mask = this.mask;
+    const w0 = this.w;
+    for (let i = 0; i < n; i++) buf[(w0 + i) & mask] = x[i];
+    this.w = (w0 + n) & mask;
+    this.sinceDetect += n;
+    if (this.sinceDetect >= sr / 60) { this.sinceDetect = 0; this.track(cfg.gate); }
+
+    // which notes to add
+    let offs = this.offsets;
+    if (cfg.mode === 'off') offs = [];
+    else if (cfg.mode === 'manual') {
+      if (cfg.kind === 'chord') { if (this.midi >= 0) offs = chordOffsets(this.midi, cfg.pcs); }
+      else offs = cfg.intervals;
+    } else if (this.midi >= 0) {
+      const d = diatonicOffsets(this.midi, cfg.keyPc, cfg.scale, cfg.steps);
+      if (d) offs = d;                             // note outside the scale: keep the last shape
+    }
+    this.offsets = offs = offs.slice(0, NV);
+
+    // pitch-synchronous sweep: the two taps sit half a sweep apart, so 2k periods keeps them in phase
+    let target = 0.045 * sr;
+    if (this.freq > 0) { const p = sr / this.freq; target = 2 * Math.max(1, Math.round(target / (2 * p))) * p; }
+    this.win += (target - this.win) * (1 - Math.pow(0.8, n / 735));
+    const D = this.win;
+
+    const a = cfg.glide <= 0 ? 1 : 1 - Math.exp(-n / (cfg.glide * sr));
+    const dry = cfg.dry, wet = cfg.wet;
+    for (let i = 0; i < n; i++) L[i] = R[i] = dry * x[i];
+    const PANS = [-0.5, 0.5, -1, 1];
+    for (let v = 0; v < NV; v++) {
+      const on = v < offs.length;
+      const s0 = this.semi[v], s1 = s0 + ((on ? offs[v] : s0) - s0) * a;
+      const g0 = this.gain[v], g1 = g0 + ((on ? cfg.levels[v] : 0) - g0) * Math.min(1, a * 2);
+      this.semi[v] = s1; this.gain[v] = g1;
+      if (g0 < 1e-5 && g1 < 1e-5) continue;
+      const pan = 0.5 + 0.5 * cfg.spread * PANS[v];
+      const gl = Math.cos(pan * Math.PI / 2) * 1.4142 * wet, gr = Math.sin(pan * Math.PI / 2) * 1.4142 * wet;
+      let ph = this.phase[v];
+      for (let i = 0; i < n; i++) {
+        const r = (i + 1) / n;
+        const ratio = Math.pow(2, (s0 + (s1 - s0) * r) / 12);
+        ph += (1 - ratio) / D;
+        ph -= Math.floor(ph);
+        let out = 0;
+        for (let tap = 0; tap < 2; tap++) {
+          let p = ph + tap * 0.5; if (p >= 1) p -= 1;
+          const rd = w0 + i - 2 - p * D + this.size;
+          const i0 = Math.floor(rd), fr = rd - i0;
+          const y = buf[i0 & mask] * (1 - fr) + buf[(i0 + 1) & mask] * fr;
+          const sn = Math.sin(Math.PI * p);
+          out += y * sn * sn;
+        }
+        const g = g0 + (g1 - g0) * r;
+        L[i] += out * g * gl; R[i] += out * g * gr;
+      }
+      this.phase[v] = ph;
+    }
+
+    // peak limiter: turn the mix down when dry + voices would clip, let it back up over about a second
+    let peak = 0;
+    for (let i = 0; i < n; i++) { const l = Math.abs(L[i]), r = Math.abs(R[i]); if (l > peak) peak = l; if (r > peak) peak = r; }
+    const q0 = this.lim, want = peak > 1e-9 ? Math.min(1, 0.9 / peak) : 1;
+    const q1 = want < q0 ? want : q0 + (want - q0) * (1 - Math.exp(-n / sr));
+    this.lim = q1;
+    if (q0 < 0.9999 || q1 < 0.9999) {
+      const k = Math.max(1, Math.min(n, Math.floor(0.002 * sr)));
+      for (let i = 0; i < n; i++) {
+        const g = i < k ? q0 + (q1 - q0) * (i + 1) / k : q1;
+        L[i] = Math.max(-1, Math.min(1, L[i] * g)); R[i] = Math.max(-1, Math.min(1, R[i] * g));
+      }
+    }
+  }
+}
+
+if (typeof AudioWorkletProcessor !== 'undefined') {
+  class HarmoniserProcessor extends AudioWorkletProcessor {
+    constructor() {
+      super();
+      this.h = new Harmoniser(sampleRate);
+      this.cfg = { mode: 'off', kind: 'int', intervals: [], pcs: [], keyPc: 0, scale: 'major', steps: [], levels: [1, 1, 1, 1], dry: 1, wet: 0.8, spread: 0.6, glide: 0.03, gate: 0.01 };
+      this.mono = new Float32Array(128);
+      this.count = 0;
+      this.port.onmessage = (e) => { this.cfg = Object.assign({}, this.cfg, e.data); };
+    }
+    process(inputs, outputs) {
+      const inp = inputs[0], out = outputs[0];
+      const n = out[0].length;
+      if (this.mono.length !== n) this.mono = new Float32Array(n);
+      const m = this.mono;
+      if (inp && inp.length && inp[0]) m.set(inp[0]); else m.fill(0);     // first input channel, like the patch
+      const L = out[0], R = out[1] || new Float32Array(n);
+      this.h.process(m, L, R, this.cfg);
+      this.count += n;
+      if (this.count >= sampleRate / 30) {
+        this.count = 0;
+        const h = this.h;
+        this.port.postMessage({ midi: h.midi, freq: h.freq, level: h.level, offsets: h.offsets, lim: h.lim });
+      }
+      return true;
+    }
+  }
+  registerProcessor('harmoniser', HarmoniserProcessor);
+}
+if (typeof module !== 'undefined') module.exports = { Harmoniser, diatonicOffsets, chordOffsets };
+  </script>
+  <script type="module">
+  // Harmoniser, browser version of the TouchDesigner patch /project1 (Harmoniser.toe).
+  // Same chain: mic -> pitch tracker + 4-voice pitch shifter (an AudioWorklet) -> speakers,
+  // camera -> eye tracker -> which chord, drawn over the camera with three needle meters.
+
+  const $ = (id) => document.getElementById(id);
+  const W = 1280, H = 720;
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem('harmoniser.' + k); return v === null ? d : v; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('harmoniser.' + k, v); } catch (e) {} },
+  };
+
+  // ───────────────────────── tables (same as the patch) ─────────────────────────
+  const KEYS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+  const NOTE_NAMES = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
+  const NAME_TO_PC = { C: 0, 'B#': 0, 'C#': 1, DB: 1, D: 2, 'D#': 3, EB: 3, E: 4, FB: 4, F: 5, 'E#': 5, 'F#': 6, GB: 6, G: 7, 'G#': 8, AB: 8, A: 9, 'A#': 10, BB: 10, B: 11, CB: 11 };
+  const SCALES = [['major', 'Major'], ['minor', 'Natural Minor'], ['dorian', 'Dorian'], ['mixolydian', 'Mixolydian'], ['lydian', 'Lydian'], ['phrygian', 'Phrygian'], ['harmminor', 'Harmonic Minor'], ['melminor', 'Melodic Minor']];
+  const PRESET_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='];
+  const CHORDS = [   // [kind, name, voices]: 'int' = fixed semitones under your note, 'chord' = nearest chord tones
+    ['int', 'Octaves', '-12 12'], ['int', 'Augmented 7 block', '-2 -4 -8 -12'], ['int', 'Major triad below', '-5 -8 -12'],
+    ['int', 'Minor triad below', '-5 -9 -12'], ['int', '6th chord block', '-3 -5 -8 -12'], ['int', 'Dominant 7 block', '-2 -5 -8 -12'],
+    ['int', 'Major 7 block', '-1 -5 -8 -12'], ['int', 'Minor 7 block', '-2 -5 -9 -12'], ['int', 'Diminished 7', '-3 -6 -9 -12'],
+    ['int', 'Quartal stack', '-5 -10 -15'], ['chord', 'Dm7 chord tones', 'D F A C'], ['chord', 'G7 chord tones', 'G B D F'],
+  ];
+  const VOICINGS = [['Close 4-way', [-2, -4, -6, -7]], ['Thirds', [-2]], ['Thirds and sixths', [-2, -5]], ['Triad below', [-2, -4, -7]], ['Drop 2', [-4, -6, -7, -9]], ['Third above + octave', [2, -7]]];
+  const DIRS = ['centre', 'left', 'right', 'up', 'down'];
+  const noteName = (m) => NOTE_NAMES[((m % 12) + 12) % 12] + (Math.floor(m / 12) - 1);
+
+  // ───────────────────────── settings (remembered per browser) ─────────────────────────
+  const P = {
+    mode: store.get('mode', 'manual'),               // manual | auto | off
+    preset: parseInt(store.get('preset', '1'), 10) || 1,
+    key: parseInt(store.get('key', '0'), 10) || 0,
+    keyFor: parseInt(store.get('keyFor', '0'), 10) || 0,
+    scale: store.get('scale', 'major'),
+    voicing: parseInt(store.get('voicing', '0'), 10) || 0,
+    dry: parseFloat(store.get('dry', '1')), wet: parseFloat(store.get('wet', '0.8')),
+    eyes: store.get('eyes', '1') === '1',
+    look: Object.assign({ centre: 'off', left: '9', right: '2', up: '7', down: '8' }, JSON.parse(store.get('look', '{}'))),
+  };
+  if (!(P.dry >= 0)) P.dry = 1;
+  if (!(P.wet >= 0)) P.wet = 0.8;
+  const eng = { midi: -1, freq: 0, level: 0, offsets: [], lim: 1 };   // latest report from the audio engine
+
+  let node = null;
+  function pushConfig() {
+    const [kind, , voices] = CHORDS[P.preset - 1] || ['int', '', ''];
+    const toks = voices.replace(/,/g, ' ').split(/\s+/).filter(Boolean);
+    const cfg = {
+      mode: P.mode, kind,
+      intervals: kind === 'int' ? toks.map(Number).filter((v) => !isNaN(v)).slice(0, 4) : [],
+      pcs: kind === 'chord' ? [...new Set(toks.map((t) => NAME_TO_PC[t.toUpperCase()]).filter((v) => v !== undefined))] : [],
+      keyPc: (((P.key + P.keyFor) % 12) + 12) % 12, scale: P.scale, steps: (VOICINGS[P.voicing] || VOICINGS[0])[1],
+      levels: [1, 1, 1, 1], dry: P.dry, wet: P.wet, spread: 0.6, glide: 0.03, gate: 0.01,
+    };
+    if (node) node.port.postMessage(cfg);
+    for (const k of ['mode', 'preset', 'key', 'keyFor', 'scale', 'voicing', 'dry', 'wet']) store.set(k, P[k]);
+    syncControls();
+    facesDirty = true;
+  }
+  const setPreset = (n) => { P.preset = Math.max(1, Math.min(12, n)); P.mode = 'manual'; pushConfig(); };
+  const setMode = (m) => { P.mode = m; pushConfig(); };
+
+  // ───────────────────────── eye tracking (MediaPipe face landmarker) ─────────────────────────
+  const V = { face: false, pts: null, dir: 'centre', cand: 'centre', candN: 0, neutral: null, warm: [], yaw: 0, pitch: 0,
+              f: null, cal: null, calRun: null, calDir: null, calMsg: '', calUntil: 0, prompt: '' };
+  const EYE_XT = 0.22, EYE_YT = 0.18, BLINK = 0.8, CAL_MIN_SEP = 2.5;
+  const CAL_STEPS = [['centre', 'LOOK STRAIGHT'], ['up', 'LOOK UP'], ['centre', 'LOOK STRAIGHT'], ['down', 'LOOK DOWN'], ['centre', 'LOOK STRAIGHT'],
+                     ['left', 'LOOK LEFT'], ['centre', 'LOOK STRAIGHT'], ['right', 'LOOK RIGHT'], ['centre', 'LOOK STRAIGHT']];
+  const CAL_STEP_S = 2.2, CAL_SKIP_S = 1.0;
+  let lm = null, eyesState = 'off';                // off | loading | on | failed
+  const trackCv = document.createElement('canvas'); trackCv.width = 640; trackCv.height = 360;
+  const tctx = trackCv.getContext('2d', { willReadFrequently: false });
+
+  async function loadEyes() {
+    eyesState = 'loading'; showStatus();
+    try {
+      const MP = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
+      const { FilesetResolver, FaceLandmarker } = await import(MP + '/vision_bundle.mjs');
+      const files = await FilesetResolver.forVisionTasks(MP + '/wasm');
+      const make = (delegate) => FaceLandmarker.createFromOptions(files, {
+        baseOptions: { modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task', delegate },
+        runningMode: 'VIDEO', numFaces: 1, outputFaceBlendshapes: true,
+      });
+      try { lm = await make('GPU'); } catch (e) { lm = await make('CPU'); }
+      eyesState = 'on';
+    } catch (e) { console.error(e); eyesState = 'failed'; }
+    showStatus();
+  }
+
+  const median = (a) => { const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+  const colMedian = (rows) => [0, 1, 2, 3].map((j) => median(rows.map((r) => r[j])));
+  const zdist = (f, c, s) => Math.hypot(...f.map((v, j) => (v - c[j]) / s[j]));
+
+  function eyeFeatures(b, L) {                     // [blink, [gaze x, gaze y, iris along, iris across]]
+    const pt = (i) => [L[i].x * 640, L[i].y * 360];
+    let along = 0, across = 0;
+    for (const [a, c, iris] of [[33, 133, 468], [362, 263, 473]]) {
+      const A = pt(a), C = pt(c), I = pt(iris);
+      const u = [C[0] - A[0], C[1] - A[1]], n = Math.hypot(u[0], u[1]);
+      if (n < 1e-3) return null;
+      along += ((I[0] - A[0]) * u[0] + (I[1] - A[1]) * u[1]) / (n * n) / 2;
+      let perp = [-u[1] / n, u[0] / n];
+      if (perp[1] < 0) perp = [-perp[0], -perp[1]];
+      across += ((I[0] - (A[0] + C[0]) / 2) * perp[0] + (I[1] - (A[1] + C[1]) / 2) * perp[1]) / n / 2;
+    }
+    const g = (k) => b[k] || 0;
+    const gx = (g('eyeLookOutLeft') + g('eyeLookInRight') - g('eyeLookOutRight') - g('eyeLookInLeft')) / 2;
+    const gy = (g('eyeLookDownLeft') + g('eyeLookDownRight') - g('eyeLookUpLeft') - g('eyeLookUpRight')) / 2;
+    return [Math.max(g('eyeBlinkLeft'), g('eyeBlinkRight')), [gx, gy, along, across]];
+  }
+
+  function settle(d, need = 4) {                   // a new look must win 4 readings in a row
+    if (d === V.dir) { V.candN = 0; return null; }
+    if (d === V.cand) V.candN++; else { V.cand = d; V.candN = 1; }
+    if (V.candN >= need) { V.dir = d; V.candN = 0; return d; }
+    return null;
+  }
+
+  function lookUpdate(yaw, pitch) {                // not calibrated: centre is wherever you looked in the first second
+    if (!V.neutral) {
+      V.warm.push([yaw, pitch]);
+      if (V.warm.length >= 20) { V.neutral = [median(V.warm.map((w) => w[0])), median(V.warm.map((w) => w[1]))]; [V.yaw, V.pitch] = V.neutral; }
+      return null;
+    }
+    V.yaw += (yaw - V.yaw) * 0.45; V.pitch += (pitch - V.pitch) * 0.45;
+    const dy = (V.yaw - V.neutral[0]) / EYE_XT, dp = (V.pitch - V.neutral[1]) / EYE_YT;
+    const cur = V.dir;
+    let mag, d;
+    if (Math.abs(dy) >= Math.abs(dp)) { mag = Math.abs(dy); d = dy > 0 ? 'right' : 'left'; } else { mag = Math.abs(dp); d = dp > 0 ? 'down' : 'up'; }
+    if (mag < (cur !== 'centre' ? 0.6 : 1.0)) d = 'centre'; else if (mag < 1.0 && d !== cur) d = cur;
+    if (d === 'centre' && cur === 'centre') { V.neutral[0] += (V.yaw - V.neutral[0]) * 0.003; V.neutral[1] += (V.pitch - V.neutral[1]) * 0.003; }
+    return settle(d);
+  }
+
+  function classify(f) {                           // nearest calibrated look, a little sticky
+    let best = null, bz = Infinity;
+    for (const d of DIRS) { let z = zdist(f, V.cal.c[d], V.cal.s); if (d === V.dir) z *= 0.85; if (z < bz) { bz = z; best = d; } }
+    return best;
+  }
+
+  function fitCal(samples) {                       // readings -> look centres; returns { cal, score } or { err }
+    for (const d of DIRS) if (samples[d].length < 6) return { err: 'face lost on ' + d };
+    const X = {}; for (const d of DIRS) X[d] = samples[d];
+    const c0 = colMedian(X.centre);
+    const all = DIRS.flatMap((d) => X[d]);
+    const rough = [0, 1, 2, 3].map((j) => { const m = all.reduce((s, r) => s + r[j], 0) / all.length; return Math.max(Math.sqrt(all.reduce((s, r) => s + (r[j] - m) ** 2, 0) / all.length), 1e-3); });
+    const cen = { centre: c0 };
+    for (const d of DIRS.slice(1)) {               // readings taken before your eyes moved look like 'straight': keep the far half
+      const far = X[d].map((r) => zdist(r, c0, rough)), cut = median(far);
+      X[d] = X[d].filter((r, i) => far[i] >= cut);
+      cen[d] = colMedian(X[d]);
+    }
+    const near = X.centre.map((r) => zdist(r, c0, rough)), p75 = [...near].sort((a, b) => a - b)[Math.floor(near.length * 0.75)];
+    X.centre = X.centre.filter((r, i) => near[i] <= p75);
+    const s = [0, 1, 2, 3].map((j) => {
+      const within = Math.sqrt(DIRS.reduce((t, d) => { const m = X[d].reduce((q, r) => q + r[j], 0) / X[d].length; return t + X[d].reduce((q, r) => q + (r[j] - m) ** 2, 0) / X[d].length; }, 0) / DIRS.length);
+      const cm = DIRS.reduce((t, d) => t + cen[d][j], 0) / DIRS.length;
+      const between = Math.sqrt(DIRS.reduce((t, d) => t + (cen[d][j] - cm) ** 2, 0) / DIRS.length);
+      return Math.max(within, between * 0.15, 1e-3);
+    });
+    for (const d of DIRS.slice(1)) if (zdist(cen[d], c0, s) < CAL_MIN_SEP) return { err: d + ' looked like straight' };
+    let ok = 0, n = 0;
+    for (const d of DIRS) for (const f of X[d]) { let b = null, bz = Infinity; for (const k of DIRS) { const z = zdist(f, cen[k], s); if (z < bz) { bz = z; b = k; } } ok += b === d; n++; }
+    return { cal: { c: cen, s }, score: ok / n };
+  }
+
+  function loadCal() {
+    V.cal = null;
+    try {
+      const c = JSON.parse(store.get('cal', 'null'));
+      if (c && c.s && DIRS.every((d) => c.c[d] && c.c[d].length === 4) && DIRS.slice(1).every((d) => zdist(c.c[d], c.c.centre, c.s) >= CAL_MIN_SEP)) V.cal = c;
+    } catch (e) {}
+  }
+  function calibrate() {
+    if (!P.eyes || eyesState !== 'on') return;
+    V.calRun = { t0: performance.now() / 1000, samples: Object.fromEntries(DIRS.map((d) => [d, []])), step: null };
+    V.calMsg = '';
+  }
+  function calTick(now) {
+    const cr = V.calRun;
+    if (!cr) return;
+    const t = now - cr.t0, k = Math.floor(t / CAL_STEP_S);
+    if (k >= CAL_STEPS.length) {
+      V.calRun = null; V.calDir = null; V.prompt = '';
+      const r = fitCal(cr.samples);
+      if (r.err) V.calMsg = 'calibration failed: ' + r.err + ' - press C';
+      else { V.cal = r.cal; store.set('cal', JSON.stringify(r.cal)); V.calMsg = 'calibrated: ' + Math.round(100 * r.score) + '% of readings matched'; V.calUntil = now + 4; }
+      V.dir = 'centre'; V.candN = 0; applyLook('centre');
+      return;
+    }
+    const [d, msg] = CAL_STEPS[k];
+    V.calDir = d; cr.step = [d, t - k * CAL_STEP_S > CAL_SKIP_S];
+    V.prompt = V.face ? msg : msg + '\n(no face)';
+  }
+
+  function applyLook(d) {
+    const v = P.look[d];
+    if (v === 'auto') setMode('auto');
+    else if (v === 'off') setMode('off');
+    else if (v) { const i = PRESET_KEYS.indexOf(v); if (i >= 0) setPreset(i + 1); }
+  }
+
+  function resetEyes() { V.neutral = null; V.warm = []; V.dir = 'centre'; V.face = false; V.pts = null; V.f = null; V.calRun = null; V.calDir = null; V.prompt = ''; }
+
+  function runEyes(now) {
+    if (!lm || !hasVideo || cam.readyState < 2) return;
+    tctx.save(); tctx.translate(640, 0); tctx.scale(-1, 1);     // the tracker sees the mirrored picture, like the patch
+    drawCover(tctx, cam, 640, 360);
+    tctx.restore();
+    let res;
+    try { res = lm.detectForVideo(trackCv, now * 1000); } catch (e) { return; }
+    if (!res.faceLandmarks || !res.faceLandmarks.length) { V.face = false; V.pts = null; return; }
+    const L = res.faceLandmarks[0];
+    V.face = true;
+    V.pts = [[L[468].x, L[468].y], [L[473].x, L[473].y]];
+    const b = {};
+    if (res.faceBlendshapes && res.faceBlendshapes[0]) for (const c of res.faceBlendshapes[0].categories) b[c.categoryName] = c.score;
+    const ef = eyeFeatures(b, L);
+    if (!ef || ef[0] > BLINK) return;
+    const f = ef[1];
+    if (V.calRun) { const st = V.calRun.step; if (st && st[1]) V.calRun.samples[st[0]].push(f); return; }
+    V.f = V.f ? V.f.map((v, j) => v + (f[j] - v) * 0.5) : f;
+    const d = V.cal ? settle(classify(V.f)) : lookUpdate(V.f[0], V.f[1]);
+    if (d) applyLook(d);
+  }
+
+  // ───────────────────────── drawing ─────────────────────────
+  const view = $('view'), ctx = view.getContext('2d');
+  const faces = document.createElement('canvas'); faces.width = W; faces.height = H;
+  const fx = faces.getContext('2d');
+  let facesDirty = true, facesKey = '';
+  const CREAM = '#f6e8aa', MINT = '#96d6be', INK = '#221c16', RED = '#cd3e24', BONE = '#ece2c8', ORANGE = '#ff7828';
+  const FONT = 'Futura, "Avenir Next", "Century Gothic", "Trebuchet MS", "Helvetica Neue", Arial, sans-serif';
+  const PAD = { x: W - 24 - 300, y: 24, w: 300, h: 262, cx: 150, cy: 132 };
+  const PAD_POS = { up: [150, 44], down: [150, 220], left: [62, 132], right: [238, 132] };
+  const BAND = 160, SIG_X = 165, TUNE_X = 1115, PIVOT_Y = 706;
+  const eyeImg = new Image(); eyeImg.src = 'images/harmoniser/eye_dots.png';
+  const EYE_ANCHOR = [240, 136], EYE_ART_W = 584;
+
+  function drawCover(c, v, w, h) {                 // fill w x h with the video, cropping the overflow
+    const vw = v.videoWidth || w, vh = v.videoHeight || h, s = Math.max(w / vw, h / vh);
+    c.drawImage(v, (w - vw * s) / 2, (h - vh * s) / 2, vw * s, vh * s);
+  }
+  function face(c, x0, y0, x1, y1, col) {          // a back-lit meter face inside a black bezel
+    c.fillStyle = '#080808'; c.fillRect(x0, y0, x1 - x0, y1 - y0);
+    const b = 5, w = x1 - x0 - 2 * b, h = y1 - y0 - 2 * b;
+    c.fillStyle = col; c.fillRect(x0 + b, y0 + b, w, h);
+    c.save(); c.beginPath(); c.rect(x0 + b, y0 + b, w, h); c.clip();
+    c.translate(x0 + b + w / 2, y0 + b + h / 2); c.scale(w / 2, h / 2);
+    const g = c.createRadialGradient(0, 0, 0, 0, 0, 1.42);
+    g.addColorStop(0, 'rgba(255,255,255,0.10)'); g.addColorStop(0.5, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,0.30)');
+    c.fillStyle = g; c.fillRect(-1, -1, 2, 2);
+    c.restore();
+  }
+  const polar = (cx, cy, r, deg) => [cx + r * Math.sin(deg * Math.PI / 180), cy - r * Math.cos(deg * Math.PI / 180)];
+  function label(c, t, x, y, px, col, align = 'center', weight = 500) {
+    c.font = `${weight} ${px}px ${FONT}`; c.fillStyle = col; c.textAlign = align; c.textBaseline = 'middle'; c.fillText(t, x, y);
+  }
+  function arcMeter(c, cx, cy, ink, marks, title, hot) {
+    const r = 104, rad = (d) => (d - 90) * Math.PI / 180;
+    c.lineCap = 'butt'; c.strokeStyle = ink; c.lineWidth = 3;
+    c.beginPath(); c.arc(cx, cy, r, rad(-50), rad(50)); c.stroke();
+    if (hot) { c.strokeStyle = RED; c.lineWidth = 5; c.beginPath(); c.arc(cx, cy, r - 8, rad(hot[0]), rad(hot[1])); c.stroke(); }
+    c.strokeStyle = ink; c.lineWidth = 2;
+    for (const [deg, lab] of marks) {
+      const a = polar(cx, cy, r, deg), b = polar(cx, cy, r + (lab ? 11 : 6), deg);
+      c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke();
+      if (lab) { const p = polar(cx, cy, r + 25, deg); label(c, lab, p[0], p[1], 14, ink); }
+    }
+    label(c, title, cx, cy - 48, 19, ink);
+    c.fillStyle = ink; c.beginPath(); c.arc(cx, cy, 7, 0, 2 * Math.PI); c.fill();
+  }
+  function drawFaces() {
+    const c = fx;
+    c.clearRect(0, 0, W, H);
+    const y0 = H - BAND;
+    face(c, 0, y0, 330, H, CREAM);
+    arcMeter(c, SIG_X, PIVOT_Y, INK, [[-60, '-60'], [-50, ''], [-40, '-40'], [-30, ''], [-20, '-20'], [-10, '-10'], [-3, ''], [0, '0']].map(([db, l]) => [-50 + 100 * (db + 60) / 60, l]), 'SIGNAL', [40, 50]);
+    label(c, 'dB', 300, y0 + 22, 14, RED, 'right');
+    face(c, 330, y0, 950, H, MINT);
+    const ink2 = '#163e34';
+    const clip = (t, n) => (t.length > n ? t.slice(0, n - 1) + '…' : t);
+    label(c, 'IN', 350, y0 + 24, 14, RED, 'left'); label(c, clip(micLabel(), 26), 378, y0 + 24, 14, ink2, 'left'); label(c, '[ I ]', 628, y0 + 24, 14, RED, 'right');
+    label(c, 'OUT', 652, y0 + 24, 14, RED, 'left'); label(c, clip(outLabel(), 24), 694, y0 + 24, 14, ink2, 'left'); label(c, '[ O ]', 930, y0 + 24, 14, RED, 'right');
+    c.strokeStyle = ink2; c.lineWidth = 1; c.beginPath(); c.moveTo(346, y0 + 40.5); c.lineTo(934, y0 + 40.5); c.stroke();
+    face(c, 950, y0, W, H, '#1a1816');
+    arcMeter(c, TUNE_X, PIVOT_Y, BONE, [[-45, '-50'], [-22.5, ''], [0, ''], [22.5, ''], [45, '+50']], 'TUNE');
+    c.strokeStyle = ORANGE; c.lineWidth = 2; c.strokeRect(TUNE_X - 7, PIVOT_Y - 104 - 34, 14, 14);
+    label(c, 'cents', W - 22, y0 + 22, 14, ORANGE, 'right');
+    if (!P.eyes) return;
+    // the look meter: four chords at the compass points, the needle points at yours
+    const lit = V.calDir || (V.face ? V.dir : null);
+    face(c, PAD.x, PAD.y, PAD.x + PAD.w, PAD.y + PAD.h, V.calDir ? MINT : CREAM);
+    const cx = PAD.x + PAD.cx, cy = PAD.y + PAD.cy;
+    c.strokeStyle = INK; c.lineWidth = 2; c.beginPath(); c.arc(cx, cy, 58, 0, 2 * Math.PI); c.stroke();
+    for (let deg = 0; deg < 360; deg += 30) { const a = polar(cx, cy, 58, deg), b = polar(cx, cy, deg % 90 === 0 ? 66 : 62, deg); c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke(); }
+    c.strokeStyle = RED; c.strokeRect(cx - 13, cy - 13, 26, 26);
+    c.fillStyle = INK; c.beginPath(); c.arc(cx, cy, 6, 0, 2 * Math.PI); c.fill();
+    const lab = (d) => { const v = P.look[d]; return v === 'auto' ? 'A' : v === 'off' || !v ? '' : v; };
+    for (const d of Object.keys(PAD_POS)) { const on = d === lit; label(c, lab(d) || '-', PAD.x + PAD_POS[d][0], PAD.y + PAD_POS[d][1], on ? 30 : 25, on ? RED : INK, 'center', 600); }
+    label(c, 'LOOK', PAD.x + 18, PAD.y + PAD.h - 24, 16, INK, 'left');
+    label(c, 'EYES', PAD.x + PAD.w - 18, PAD.y + PAD.h - 24, 14, RED, 'right');
+    if (lab('centre')) label(c, 'centre: ' + (lab('centre') === 'A' ? 'auto' : lab('centre')), PAD.x + 18, PAD.y + 22, 12, INK, 'left');
+  }
+
+  const M = [50, 54, 0, 0];                        // needle angles: signal, tune, look, look length (degrees, + = anticlockwise)
+  const LOOK_ROT = { up: 0, right: -90, down: 180, left: 90 };
+  function moveNeedles() {
+    const db = 20 * Math.log10(Math.max(eng.level, 1e-6));
+    const sig = 50 - 100 * Math.min(1, Math.max(0, (db + 60) / 60));
+    M[0] += (sig - M[0]) * (sig < M[0] ? 0.5 : 0.1);                       // quick up, slow fall
+    let tune = 54;                                                         // rests off the left end
+    if (eng.freq > 0 && eng.midi >= 0 && eng.level >= 0.01) tune = -45 * Math.min(1, Math.max(-1, 100 * (69 + 12 * Math.log2(eng.freq / 440) - eng.midi) / 50));
+    M[1] += (tune - M[1]) * 0.2;
+    const d = P.eyes && V.face ? (V.calDir || V.dir) : 'centre';
+    if (d in LOOK_ROT) { let t = LOOK_ROT[d]; t += 360 * Math.round((M[2] - t) / 360); M[2] += (t - M[2]) * 0.3; M[3] += (0.56 - M[3]) * 0.3; }
+    else M[3] += (0 - M[3]) * 0.3;
+  }
+  function needle(px, py, deg, len, col) {
+    if (len < 1) return;
+    ctx.save(); ctx.translate(px, py); ctx.rotate(-deg * Math.PI / 180);
+    ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(-1.6, 0); ctx.lineTo(1.6, 0); ctx.lineTo(0.6, -len); ctx.lineTo(-0.6, -len); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  let ep = null;                                   // smoothed eye positions: [lx, ly, rx, ry, scale]
+  function statusLines() {
+    let labelTxt;
+    if (P.mode === 'off') labelTxt = 'NO HARMONY';
+    else if (P.mode === 'manual') labelTxt = 'MANUAL  ' + PRESET_KEYS[P.preset - 1] + '  ' + CHORDS[P.preset - 1][1];
+    else labelTxt = 'AUTO  ' + KEYS[P.key] + ' ' + SCALES.find((s) => s[0] === P.scale)[1] + '  ' + VOICINGS[P.voicing][0];
+    let cam2 = '';
+    if (P.eyes) {
+      const now = performance.now() / 1000;
+      if (eyesState === 'loading') cam2 = 'starting eye tracker';
+      else if (eyesState === 'failed') cam2 = 'eye tracker unavailable: use the number keys';
+      else if (!hasVideo) cam2 = 'no camera: use the number keys';
+      else if (V.calRun) cam2 = 'calibrating';
+      else if (V.calMsg.startsWith('calibration failed')) cam2 = V.calMsg;
+      else {
+        cam2 = !V.face ? 'no face' : (!V.cal && !V.neutral) ? 'hold still: finding centre' : 'eyes: ' + V.dir;
+        cam2 += V.calMsg && now < V.calUntil ? ' - ' + V.calMsg : V.cal ? '' : ' - press C to calibrate';
+      }
+    }
+    const offs = eng.offsets.length ? eng.offsets.map((o) => (o > 0 ? '+' : '') + o).join(' ') : '-';
+    return [labelTxt, cam2 || ' ', 'you: ' + (eng.midi >= 0 ? noteName(eng.midi) : '--') + '     voices: ' + offs];
+  }
+
+  function draw() {
+    ctx.fillStyle = '#0c0f1d'; ctx.fillRect(0, 0, W, H);
+    if (hasVideo && cam.readyState >= 2) { ctx.save(); ctx.translate(W, 0); ctx.scale(-1, 1); drawCover(ctx, cam, W, H); ctx.restore(); }
+    const key = [P.eyes, V.calDir, V.face ? V.dir : '', JSON.stringify(P.look), micLabel(), outLabel()].join('|');
+    if (facesDirty || key !== facesKey) { facesKey = key; facesDirty = false; drawFaces(); }
+    ctx.drawImage(faces, 0, 0);
+    // dotted eyes over yours
+    if (P.eyes && V.pts && eyeImg.complete && eyeImg.naturalWidth) {
+      const [a, b] = [...V.pts].sort((p, q) => p[0] - q[0]);
+      const d = Math.hypot((b[0] - a[0]) * W, (b[1] - a[1]) * H);
+      const t = [a[0] * W, a[1] * H, b[0] * W, b[1] * H, 0.95 * d / EYE_ART_W];
+      ep = ep ? ep.map((v, i) => v + (t[i] - v) * 0.5) : t;
+      for (const [x, y, flip] of [[ep[0], ep[1], -1], [ep[2], ep[3], 1]]) {
+        ctx.save(); ctx.translate(x, y); ctx.scale(flip * ep[4], ep[4]); ctx.drawImage(eyeImg, -EYE_ANCHOR[0], -EYE_ANCHOR[1]); ctx.restore();
+      }
+    } else ep = null;
+    moveNeedles();
+    needle(SIG_X, PIVOT_Y, M[0], 100, INK);
+    needle(TUNE_X, PIVOT_Y, M[1], 100, ORANGE);
+    if (P.eyes) needle(PAD.x + PAD.cx, PAD.y + PAD.cy, M[2], 100 * M[3], INK);
+    const lines = statusLines();
+    lines.forEach((t, i) => label(ctx, t, 640, H - BAND + 68 + i * 30, i === 0 ? 24 : 21, '#12382e', 'center', i === 0 ? 600 : 500));
+    if (V.prompt) V.prompt.split('\n').forEach((t, i) => { ctx.lineWidth = 6; ctx.strokeStyle = 'rgba(8,12,24,0.55)'; ctx.font = `600 ${i ? 44 : 96}px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.strokeText(t, 640, 300 + i * 90); ctx.fillStyle = '#40abff'; ctx.fillText(t, 640, 300 + i * 90); });
+  }
+
+  // ───────────────────────── camera + microphone + audio ─────────────────────────
+  const cam = $('cam');
+  let stream = null, actx = null, src = null, hasVideo = false, hasAudio = false, running = false, raf = 0;
+  const micSel = $('micSel'), camSel = $('camSel'), outSel = $('outSel');
+  const canSink = typeof AudioContext !== 'undefined' && 'setSinkId' in AudioContext.prototype;
+  const selLabel = (sel, d) => (sel.selectedOptions[0] ? sel.selectedOptions[0].textContent : d);
+  const micLabel = () => (hasAudio ? selLabel(micSel, 'Microphone') : 'No microphone');
+  const outLabel = () => (canSink ? selLabel(outSel, 'System default') : 'System default');
+
+  async function openStream() {
+    const mic = store.get('mic', ''), camId = store.get('cam', '');
+    // processing off: echo cancelling, noise suppression and auto gain all smear a held note
+    const audio = { echoCancellation: false, noiseSuppression: false, autoGainControl: false };
+    if (mic) audio.deviceId = { exact: mic };
+    const video = { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 60 } };
+    if (camId) video.deviceId = { exact: camId };
+    const md = navigator.mediaDevices;
+    if (!md || !md.getUserMedia) throw new Error('This browser cannot open the camera or microphone on this page.');
+    const attempts = [{ audio, video }, { audio: { ...audio, deviceId: undefined }, video: { ...video, deviceId: undefined } }, { audio: true, video: false }, { audio: false, video: true }];
+    let last;
+    for (const c of attempts) {
+      try { return await md.getUserMedia(c); } catch (e) { last = e; if (e && e.name === 'NotAllowedError') break; }
+    }
+    throw last;
+  }
+
+  async function listDevices() {
+    const devs = await navigator.mediaDevices.enumerateDevices();
+    const cur = { audioinput: '', videoinput: '', audiooutput: store.get('out', '') };
+    if (stream) {
+      const a = stream.getAudioTracks()[0], v = stream.getVideoTracks()[0];
+      if (a) cur.audioinput = a.getSettings().deviceId || '';
+      if (v) cur.videoinput = v.getSettings().deviceId || '';
+    }
+    const names = { audioinput: 'Microphone ', videoinput: 'Camera ', audiooutput: 'Output ' };
+    for (const [sel, kind] of [[micSel, 'audioinput'], [camSel, 'videoinput'], [outSel, 'audiooutput']]) {
+      sel.textContent = '';
+      const list = devs.filter((d) => d.kind === kind && d.deviceId !== 'communications');
+      if (kind === 'audiooutput' && !list.some((d) => d.deviceId === 'default')) list.unshift({ deviceId: 'default', label: 'System default' });
+      list.forEach((d, i) => {
+        const o = document.createElement('option');
+        o.value = d.deviceId; o.textContent = (d.label || names[kind] + (i + 1)).replace(/^Default - /, '');
+        if (d.deviceId === cur[kind]) o.selected = true;
+        sel.appendChild(o);
+      });
+    }
+    $('outField').hidden = !canSink;
+    facesDirty = true;
+  }
+
+  function closeStream() {
+    if (stream) stream.getTracks().forEach((t) => t.stop());
+    if (src) { try { src.disconnect(); } catch (e) {} src = null; }
+    stream = null; hasVideo = false; hasAudio = false;
+    cam.srcObject = null;
+  }
+
+  async function initAudio() {
+    if (actx) return;
+    actx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'interactive' });
+    const url = URL.createObjectURL(new Blob([$('workletSrc').textContent], { type: 'text/javascript' }));
+    await actx.audioWorklet.addModule(url);
+    URL.revokeObjectURL(url);
+    node = new AudioWorkletNode(actx, 'harmoniser', { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [2] });
+    node.port.onmessage = (e) => Object.assign(eng, e.data);
+    node.connect(actx.destination);
+    const out = store.get('out', '');
+    if (canSink && out && out !== 'default') { try { await actx.setSinkId(out); } catch (e) { store.set('out', ''); } }
+  }
+
+  async function connect() {
+    closeStream();
+    await initAudio();
+    stream = await openStream();
+    if (actx.state === 'suspended') await actx.resume();
+    if (stream.getAudioTracks().length) {
+      src = actx.createMediaStreamSource(stream);
+      src.connect(node);
+      hasAudio = true;
+    }
+    if (stream.getVideoTracks().length) {
+      cam.srcObject = stream;
+      await cam.play().catch(() => {});
+      hasVideo = true;
+    }
+    resetEyes();
+    await listDevices();
+    pushConfig();
+  }
+
+  async function setOutput(id) {
+    if (!canSink || !actx) return;
+    try { await actx.setSinkId(id === 'default' ? '' : id); store.set('out', id); } catch (e) { console.error(e); }
+    outSel.value = store.get('out', 'default');
+    facesDirty = true;
+  }
+  async function cycle(sel, apply) {               // I / O keys: step to the next device in the list
+    if (!sel.options.length) return;
+    sel.selectedIndex = (sel.selectedIndex + 1) % sel.options.length;
+    await apply(sel.value);
+  }
+  const setMic = async (id) => { store.set('mic', id); try { await connect(); } catch (e) { console.error(e); } showStatus(); };
+
+  // ───────────────────────── main loop ─────────────────────────
+  let frameNo = 0;
+  function frame(ms) {
+    if (!running) return;
+    raf = requestAnimationFrame(frame);
+    const now = ms / 1000;
+    frameNo++;
+    if (P.eyes) { calTick(now); if (frameNo % 2 === 0) runEyes(now); }
+    draw();
+  }
+
+  // ───────────────────────── page controls ─────────────────────────
+  const overlay = $('overlay'), msg = $('overlayMsg'), statusEl = $('status');
+  function showStatus() {
+    const parts = [];
+    if (running) {
+      if (!hasAudio) parts.push('No microphone');
+      if (!hasVideo) parts.push('No camera');
+      if (P.eyes) parts.push({ loading: 'Eye tracking loading', on: 'Eye tracking on', failed: 'Eye tracking unavailable, the number keys still pick chords', off: '' }[eyesState]);
+      parts.push('Number keys 1 to = pick a chord');
+    }
+    statusEl.textContent = parts.filter(Boolean).join(' · ');
+  }
+  function fill(sel, opts, val) {
+    sel.textContent = '';
+    for (const [v, t] of opts) { const o = document.createElement('option'); o.value = v; o.textContent = t; sel.appendChild(o); }
+    sel.value = String(val);
+  }
+  function syncControls() {
+    $('presetSel').value = String(P.preset);
+    $('keySel').value = String(P.key); $('scaleSel').value = P.scale; $('voiceSel').value = String(P.voicing); $('keyFor').value = String(P.keyFor);
+    $('wet').value = P.wet; $('wetOut').textContent = P.wet.toFixed(2); $('dry').value = P.dry; $('dryOut').textContent = P.dry.toFixed(2);
+    $('auto').setAttribute('aria-pressed', String(P.mode === 'auto'));
+    $('eyesBtn').setAttribute('aria-pressed', String(P.eyes));
+    $('calib').hidden = !P.eyes;
+    for (const d of DIRS) $('look-' + d).value = P.look[d];
+  }
+  fill($('presetSel'), CHORDS.map((c, i) => [i + 1, PRESET_KEYS[i] + '  ' + c[1]]), P.preset);
+  fill($('keySel'), KEYS.map((k, i) => [i, k]), P.key);
+  fill($('scaleSel'), SCALES, P.scale);
+  fill($('voiceSel'), VOICINGS.map((v, i) => [i, v[0]]), P.voicing);
+  for (const d of DIRS) {
+    fill($('look-' + d), [['off', 'No harmony'], ['auto', 'Auto key'], ...CHORDS.map((c, i) => [PRESET_KEYS[i], PRESET_KEYS[i] + '  ' + c[1]])], P.look[d]);
+    $('look-' + d).addEventListener('change', (e) => { P.look[d] = e.target.value; store.set('look', JSON.stringify(P.look)); facesDirty = true; });
+  }
+  syncControls();
+
+  async function start() {
+    $('start').disabled = true;
+    msg.classList.remove('err');
+    msg.textContent = 'Waiting for the camera and microphone…';
+    try {
+      await connect();
+    } catch (e) {
+      console.error(e);
+      $('start').disabled = false;
+      msg.classList.add('err');
+      msg.textContent = e && e.name === 'NotAllowedError'
+        ? 'Camera and microphone access was blocked. Allow both for this site in your browser, then press Start again.'
+        : e && e.name === 'NotFoundError'
+          ? 'No camera or microphone was found on this device.'
+          : 'Could not start: ' + (e && e.message ? e.message : e);
+      return;
+    }
+    overlay.hidden = true;
+    $('controls').hidden = false;
+    running = true;
+    loadCal();
+    if (P.eyes) applyLook('centre');
+    raf = requestAnimationFrame(frame);
+    showStatus();
+    if (P.eyes && eyesState === 'off' && hasVideo) loadEyes();
+  }
+
+  function stop() {
+    running = false;
+    cancelAnimationFrame(raf);
+    closeStream();
+    if (actx) actx.suspend();
+    resetEyes();
+    $('controls').hidden = true; $('settings').hidden = true;
+    $('settingsBtn').setAttribute('aria-pressed', 'false');
+    $('start').disabled = false;
+    msg.classList.remove('err');
+    msg.textContent = 'Stopped. The camera and microphone are off.';
+    overlay.hidden = false;
+  }
+
+  const toggleFull = () => {
+    const st = $('stage');
+    if (document.fullscreenElement || document.webkitFullscreenElement) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    else (st.requestFullscreen || st.webkitRequestFullscreen).call(st);
+  };
+  const toggleAuto = () => setMode(P.mode === 'manual' ? 'auto' : 'manual');
+  const setEyes = (v) => {
+    P.eyes = v; store.set('eyes', v ? '1' : '0'); resetEyes(); syncControls(); facesDirty = true;
+    if (v && running) { applyLook('centre'); if (eyesState === 'off' && hasVideo) loadEyes(); }
+    showStatus();
+  };
+
+  $('start').addEventListener('click', start);
+  $('stop').addEventListener('click', stop);
+  $('calib').addEventListener('click', calibrate);
+  $('auto').addEventListener('click', toggleAuto);
+  $('full').addEventListener('click', toggleFull);
+  $('eyesBtn').addEventListener('click', () => setEyes(!P.eyes));
+  $('settingsBtn').addEventListener('click', () => {
+    const s = $('settings'); s.hidden = !s.hidden;
+    $('settingsBtn').setAttribute('aria-pressed', String(!s.hidden));
+  });
+  $('presetSel').addEventListener('change', (e) => setPreset(parseInt(e.target.value, 10)));
+  $('keySel').addEventListener('change', (e) => { P.key = parseInt(e.target.value, 10); pushConfig(); });
+  $('scaleSel').addEventListener('change', (e) => { P.scale = e.target.value; pushConfig(); });
+  $('voiceSel').addEventListener('change', (e) => { P.voicing = parseInt(e.target.value, 10); pushConfig(); });
+  $('keyFor').addEventListener('change', (e) => { P.keyFor = parseInt(e.target.value, 10); pushConfig(); });
+  $('wet').addEventListener('input', (e) => { P.wet = parseFloat(e.target.value); pushConfig(); });
+  $('dry').addEventListener('input', (e) => { P.dry = parseFloat(e.target.value); pushConfig(); });
+  micSel.addEventListener('change', () => setMic(micSel.value));
+  camSel.addEventListener('change', async () => { store.set('cam', camSel.value); try { await connect(); } catch (e) { console.error(e); } showStatus(); });
+  outSel.addEventListener('change', () => setOutput(outSel.value));
+  if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) navigator.mediaDevices.addEventListener('devicechange', () => { if (running) listDevices().catch(() => {}); });
+
+  document.addEventListener('keydown', (e) => {
+    if (!running || e.metaKey || e.ctrlKey || e.altKey) return;
+    const tag = e.target && e.target.tagName;
+    if (tag === 'SELECT' || tag === 'INPUT' || tag === 'TEXTAREA') return;
+    const k = e.key.toLowerCase();
+    const i = PRESET_KEYS.indexOf(k);
+    if (i >= 0) setPreset(i + 1);
+    else if (k === '`') toggleAuto();
+    else if (k === 'c') calibrate();
+    else if (k === 'f') toggleFull();
+    else if (k === 'i') cycle(micSel, setMic);
+    else if (k === 'o') cycle(outSel, setOutput);
+  });
+
+  // hooks for testing from the console
+  window.__harmoniser = { P, V, eng, M, fitCal, applyLook, setPreset, setMode, statusLines, get running() { return running; }, get eyesState() { return eyesState; } };
+  </script>
+</body>
+</html>
