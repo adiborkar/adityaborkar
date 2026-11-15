@@ -198,3 +198,27 @@ html {
 body, button, input, select, textarea {
   font-family: 'Redaction', 'Zodiak', Georgia, serif !important;
 }
+
+/* ── 5. TITLES: ST Camino Frontera (Type it Easy) ──────────────
+   Titles only: your name, page and section headings, card, episode,
+   track and essay titles. Body text stays in the typeface set above.
+   To undo, delete this whole block.
+   The file is the demo cut; swap in the full version's .woff2 under
+   the same name when you have it (same block keeps working).
+   ───────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Camino Frontera';
+  src: url('fonts/CaminoFrontera-Demo.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+.nav > a:first-child, .nav-name, .name h1,
+.page-intro, .piece-title, .section-heading,
+.card-title, .episode-title, .index-title, .track-title, .work-title,
+.work-body h3 {
+  font-family: 'Camino Frontera', 'Redaction', 'Zodiak', Georgia, serif !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  letter-spacing: 0.01em !important;
+}
