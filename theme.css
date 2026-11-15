@@ -169,26 +169,32 @@ html {
   }
 }
 
-/* ── 4. TYPEFACE TRIAL: Basteleur ──────────────────────────────
-   Site-wide swap from Zodiak to Basteleur (Keussel / Velvetyne, SIL OFL).
+/* ── 4. TYPEFACE TRIAL: Redaction ──────────────────────────────
+   Site-wide swap from Zodiak to Redaction (Jeremy Mickel / MCKL).
    To go back to Zodiak, delete this whole block. Nothing else changed.
-   Basteleur has two cuts: Moonlight (light) for text, Bold for 600 and up.
-   It has no italic, so italics are slanted by the browser.
+   Regular for text, Bold for 600 and up, real Italic for regular-weight italics.
    ───────────────────────────────────────────────────────────── */
 @font-face {
-  font-family: 'Basteleur';
-  src: url('fonts/Basteleur-Moonlight.woff2') format('woff2');
+  font-family: 'Redaction';
+  src: url('fonts/Redaction-Regular.woff2') format('woff2');
   font-weight: 100 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Basteleur';
-  src: url('fonts/Basteleur-Bold.woff2') format('woff2');
+  font-family: 'Redaction';
+  src: url('fonts/Redaction-Italic.woff2') format('woff2');
+  font-weight: 100 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Redaction';
+  src: url('fonts/Redaction-Bold.woff2') format('woff2');
   font-weight: 600 900;
   font-style: normal;
   font-display: swap;
 }
 body, button, input, select, textarea {
-  font-family: 'Basteleur', 'Zodiak', Georgia, serif !important;
+  font-family: 'Redaction', 'Zodiak', Georgia, serif !important;
 }
