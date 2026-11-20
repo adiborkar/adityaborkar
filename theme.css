@@ -222,3 +222,16 @@ body, button, input, select, textarea {
   font-style: normal !important;
   letter-spacing: 0.01em !important;
 }
+
+/* ── 6. FONTS: Fraunces titles + Newsreader body ──────────────
+   Overrides blocks 4 (Redaction) and 5 (Camino Frontera).
+   To undo, delete this whole block; the site goes back to Camino + Redaction.
+   Both fonts are open source (SIL OFL). ─────────────────────── */
+@font-face{font-family:'Newsreader';src:url('fonts/newsreader-latin-opsz-normal.woff2') format('woff2');font-weight:200 800;font-style:normal;font-display:swap}
+@font-face{font-family:'Newsreader';src:url('fonts/newsreader-latin-opsz-italic.woff2') format('woff2');font-weight:200 800;font-style:italic;font-display:swap}
+body, button, input, select, textarea { font-family:'Newsreader', Georgia, serif !important; letter-spacing:-0.005em; }
+@font-face{font-family:'Fraunces';src:url('fonts/fraunces-latin-full-normal.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+.nav > a:first-child, .nav-name, .name h1,
+.page-intro, .piece-title, .section-heading,
+.card-title, .episode-title, .index-title, .track-title, .work-title,
+.work-body h3 { font-family:'Fraunces', Georgia, serif !important; font-weight:400 !important; letter-spacing:-0.02em !important; font-variation-settings:'SOFT' 100, 'WONK' 0; }
